@@ -45,6 +45,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\Mode.cs" />
+    <Compile Include="OBDData\AbstractOBDData.cs" />
+    <Compile Include="OBDData\AuxiliaryInputStatus.cs" />
+    <Compile Include="OBDData\CommandedSecondaryAirStatus.cs" />
+    <Compile Include="OBDData\EngineCoolantTemperature.cs" />
+    <Compile Include="OBDData\CalculatedEngineLoad.cs" />
+    <Compile Include="OBDData\EngineRPM.cs" />
+    <Compile Include="OBDData\FuelPressure.cs" />
+    <Compile Include="OBDData\FuelSystemStatus.cs" />
+    <Compile Include="OBDData\IntakeAirTemperature.cs" />
+    <Compile Include="OBDData\IntakeManifoldAbsolutePressure.cs" />
+    <Compile Include="OBDData\IOBDData.cs" />
+    <Compile Include="OBDData\LongTermFuelTrimBank1.cs" />
+    <Compile Include="OBDData\LongTermFuelTrimBank2.cs" />
+    <Compile Include="OBDData\MAFAirFlowRate.cs" />
+    <Compile Include="OBDData\OBDStandards.cs" />
+    <Compile Include="OBDData\OxygenSensor8.cs" />
+    <Compile Include="OBDData\OxygenSensor7.cs" />
+    <Compile Include="OBDData\OxygenSensor6.cs" />
+    <Compile Include="OBDData\OxygenSensor5.cs" />
+    <Compile Include="OBDData\OxygenSensor4.cs" />
+    <Compile Include="OBDData\OxygenSensor3.cs" />
+    <Compile Include="OBDData\OxygenSensor2.cs" />
+    <Compile Include="OBDData\OxygenSensor1.cs" />
+    <Compile Include="OBDData\OxygenSensorPresent.cs" />
+    <Compile Include="OBDData\OxygenSensorsPresent2.cs" />
+    <Compile Include="OBDData\PidsSupported01_20.cs" />
+    <Compile Include="OBDData\RunTimeSinceEngineStart.cs" />
+    <Compile Include="OBDData\ShortTermFuelTrimBank1.cs" />
+    <Compile Include="OBDData\ShortTermFuelTrimBank2.cs" />
+    <Compile Include="OBDData\ThrottlePosition.cs" />
+    <Compile Include="OBDData\TimingAdvance.cs" />
+    <Compile Include="OBDData\VehicleSpeed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
