@@ -2,7 +2,7 @@
 
 namespace OBD.NET.OBDData
 {
-    public class PidsSupported01_20 : AbstractOBDData
+    public class PidsSupportedA1_C0 : AbstractOBDData
     {
         #region Properties & Fields
 
@@ -39,8 +39,8 @@ namespace OBD.NET.OBDData
 
         #region Constructors
 
-        public PidsSupported01_20()
-            : base(0x00, 4)
+        public PidsSupportedA1_C0()
+            : base(0xA0, 4)
         { }
 
         #endregion

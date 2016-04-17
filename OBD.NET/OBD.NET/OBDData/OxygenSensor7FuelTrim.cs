@@ -1,6 +1,6 @@
 ﻿namespace OBD.NET.OBDData
 {
-    public class OxygenSensor6 : AbstractOBDData
+    public class OxygenSensor7FuelTrim : AbstractOBDData
     {
         #region Properties & Fields
 
@@ -12,8 +12,8 @@
 
         #region Constructors
 
-        public OxygenSensor6()
-            : base(0x19, 2)
+        public OxygenSensor7FuelTrim()
+            : base(0x1A, 2)
         { }
 
         #endregion
