@@ -29,7 +29,7 @@ namespace OBD.NET.OBDData
         protected byte C => RawData.Length > 2 ? RawData[2] : default(byte);
         protected byte D => RawData.Length > 3 ? RawData[3] : default(byte);
         protected byte E => RawData.Length > 4 ? RawData[4] : default(byte);
-        
+
         #endregion
 
         #region Constructors
@@ -44,9 +44,6 @@ namespace OBD.NET.OBDData
             : this(pid, length)
         {
             this.RawData = rawData;
-
-            if (rawData.Length != _length)
-                throw new ArgumentException("The provided raw-data is not valid", nameof(rawData));
         }
 
         #endregion
