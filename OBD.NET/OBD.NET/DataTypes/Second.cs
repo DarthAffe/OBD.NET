@@ -2,6 +2,12 @@
 {
     public class Second : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "s";
+
+        #endregion
+
         #region Constructors
 
         public Second(double value, double minValue, double maxValue)

@@ -2,6 +2,12 @@
 {
     public class Pascal : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "Pa";
+
+        #endregion
+
         #region Constructors
 
         public Pascal(double value, double minValue, double maxValue)

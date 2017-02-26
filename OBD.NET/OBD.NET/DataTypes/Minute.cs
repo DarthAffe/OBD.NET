@@ -2,6 +2,12 @@
 {
     public class Minute : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "min";
+
+        #endregion
+
         #region Constructors
 
         public Minute(double value, double minValue, double maxValue)

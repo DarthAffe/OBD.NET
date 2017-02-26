@@ -2,7 +2,7 @@
 
 namespace OBD.NET.DataTypes
 {
-    public class GenericData
+    public abstract class GenericData
     {
         #region Properties & Fields
 
@@ -10,6 +10,8 @@ namespace OBD.NET.DataTypes
         public double MinValue { get; }
         public double MaxValue { get; }
         public bool IsFloatingPointValue { get; }
+
+        protected abstract string Unit { get; }
 
         #endregion
 
@@ -43,6 +45,15 @@ namespace OBD.NET.DataTypes
         public static implicit operator int(GenericData p)
         {
             return (int)Math.Round(p.Value);
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + (Unit == null ? string.Empty : (" " + Unit));
         }
 
         #endregion

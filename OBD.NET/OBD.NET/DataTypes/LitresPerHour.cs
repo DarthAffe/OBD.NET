@@ -2,6 +2,12 @@
 {
     public class LitresPerHour : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "l/h";
+
+        #endregion
+
         #region Constructors
 
         public LitresPerHour(double value, double minValue, double maxValue)

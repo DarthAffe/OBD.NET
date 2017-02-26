@@ -2,6 +2,12 @@
 {
     public class Count : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => null;
+
+        #endregion
+
         #region Constructors
 
         public Count(double value, double minValue, double maxValue)

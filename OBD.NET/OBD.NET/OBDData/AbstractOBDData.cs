@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using OBD.NET.Extensions;
 
 namespace OBD.NET.OBDData
 {
@@ -7,7 +7,7 @@ namespace OBD.NET.OBDData
     {
         #region Properties & Fields
 
-        public int PID { get; }
+        public byte PID { get; }
         private int _length;
 
         private byte[] _rawData;
@@ -34,13 +34,13 @@ namespace OBD.NET.OBDData
 
         #region Constructors
 
-        public AbstractOBDData(int pid, int length)
+        public AbstractOBDData(byte pid, int length)
         {
             this.PID = pid;
             this._length = length;
         }
 
-        public AbstractOBDData(int pid, int length, byte[] rawData)
+        public AbstractOBDData(byte pid, int length, byte[] rawData)
             : this(pid, length)
         {
             this.RawData = rawData;
@@ -50,13 +50,16 @@ namespace OBD.NET.OBDData
 
         #region Methods
 
-        public void Read(Stream stream)
+        public void Load(string data)
         {
             try
             {
+                if (((data.Length % 2) == 1) || ((data.Length / 2) != _length))
+                    throw new ArgumentException("The provided data is not valid", nameof(data));
+
                 _rawData = new byte[_length];
-                if (stream.Read(_rawData, 0, _length) != _length)
-                    throw new InvalidDataException("Couldn't read enough bytes from the stream");
+                for (int i = 0; i < _length; ++i)
+                    _rawData[i] = (byte)((data[i << 1].GetHexVal() << 4) + (data[(i << 1) + 1].GetHexVal()));
             }
             catch
             {

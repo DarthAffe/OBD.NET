@@ -2,6 +2,12 @@
 {
     public class KilometrePerHour : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "km/h";
+
+        #endregion
+
         #region Constructors
 
         public KilometrePerHour(double value, double minValue, double maxValue)

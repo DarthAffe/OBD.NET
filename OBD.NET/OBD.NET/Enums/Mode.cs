@@ -3,7 +3,7 @@
     /// <summary>
     /// https://en.wikipedia.org/wiki/OBD-II_PIDs#Modes
     /// </summary>
-    internal enum Mode
+    public enum Mode
     {
         ShowCurrentData = 0x01,
         ShowFreezeFrameData = 0x02,

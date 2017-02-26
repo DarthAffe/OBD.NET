@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ATCommand.cs" />
+    <Compile Include="Communication\SerialConnection.cs" />
     <Compile Include="DataTypes\Degree.cs" />
     <Compile Include="DataTypes\Minute.cs" />
     <Compile Include="DataTypes\LitresPerHour.cs" />
@@ -63,7 +65,19 @@
     <Compile Include="DataTypes\Percent.cs" />
     <Compile Include="DataTypes\DegreeCelsius.cs" />
     <Compile Include="DataTypes\GenericData.cs" />
+    <Compile Include="Devices\SerialDevice.cs" />
+    <Compile Include="Devices\ELM327.cs" />
+    <Compile Include="Devices\STN1170.cs" />
     <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Events\EventArgs\RawDataReceivedEventArgs.cs" />
+    <Compile Include="Events\EventArgs\DataReceivedEventArgs.cs" />
+    <Compile Include="Events\GenericDataEventManager.cs" />
+    <Compile Include="Events\IDataEventManager.cs" />
+    <Compile Include="Exceptions\SerialException.cs" />
+    <Compile Include="Exceptions\UnexpectedResultException.cs" />
+    <Compile Include="Extensions\HexExtension.cs" />
+    <Compile Include="Logging\IOBDLogger.cs" />
+    <Compile Include="Logging\OBDLogLevel.cs" />
     <Compile Include="OBDData\20-3F\AbsoluteBarometricPressure.cs" />
     <Compile Include="OBDData\40-5F\AbsoluteEvapSystemVaporPressure.cs" />
     <Compile Include="OBDData\40-5F\AbsoluteLoadValue.cs" />

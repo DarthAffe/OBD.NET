@@ -2,6 +2,12 @@
 {
     public class Volt : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "V";
+
+        #endregion
+
         #region Constructors
 
         public Volt(double value, double minValue, double maxValue)

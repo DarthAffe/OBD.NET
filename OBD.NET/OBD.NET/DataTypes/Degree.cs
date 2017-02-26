@@ -2,6 +2,12 @@
 {
     public class Degree : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "°";
+
+        #endregion
+
         #region Constructors
 
         public Degree(double value, double minValue, double maxValue)

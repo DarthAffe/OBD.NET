@@ -2,6 +2,12 @@
 {
     public class Kilopascal : GenericData
     {
+        #region Properties & Fields
+
+        protected override string Unit => "kPa";
+
+        #endregion
+
         #region Constructors
 
         public Kilopascal(double value, double minValue, double maxValue)
