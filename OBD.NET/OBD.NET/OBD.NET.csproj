@@ -45,7 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\STCommand.cs" />
     <Compile Include="Commands\ATCommand.cs" />
+    <Compile Include="Communication\EnhancedSerialPort.cs" />
     <Compile Include="Communication\SerialConnection.cs" />
     <Compile Include="DataTypes\Degree.cs" />
     <Compile Include="DataTypes\Minute.cs" />
