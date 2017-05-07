@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OBD.NET.Common", "OBD.NET.Common\OBD.NET.Common.csproj", "{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODB.NET.Desktop", "ODB.NET.Desktop\ODB.NET.Desktop.csproj", "{14CB98E1-95DE-4923-8896-FDF5171AA49E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
