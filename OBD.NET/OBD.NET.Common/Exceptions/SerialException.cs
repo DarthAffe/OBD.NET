@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace OBD.NET.Exceptions
 {
@@ -17,10 +16,7 @@ namespace OBD.NET.Exceptions
         public SerialException(string message, Exception innerException)
             : base(message, innerException)
         { }
-
-        protected SerialException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
+        
 
         #endregion
     }

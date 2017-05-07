@@ -36,7 +36,7 @@ namespace OBD.NET.Devices
 
         #region Constructors
 
-        public ELM327(SerialConnection connection, IOBDLogger logger = null)
+        public ELM327(ISerialConnection connection, IOBDLogger logger = null)
             : base(connection, logger: logger)
         { }
 

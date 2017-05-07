@@ -11,14 +11,14 @@ namespace OBD.NET.Devices
 
         protected IOBDLogger Logger { get; }
 
-        protected SerialConnection Connection { get; }
+        protected ISerialConnection Connection { get; }
         protected char Terminator { get; set; }
 
         #endregion
 
         #region Constructors
 
-        protected SerialDevice(SerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
+        protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
         {
             this.Connection = connection;
             this.Terminator = terminator;

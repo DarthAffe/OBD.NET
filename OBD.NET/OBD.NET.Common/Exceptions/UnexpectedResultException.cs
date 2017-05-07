@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace OBD.NET.Exceptions
 {
@@ -34,13 +33,7 @@ namespace OBD.NET.Exceptions
             this.Result = result;
             this.ExpectedResult = expectedResult;
         }
-
-        protected UnexpectedResultException(SerializationInfo info, StreamingContext context, string result, string expectedResult)
-            : base(info, context)
-        {
-            this.Result = result;
-            this.ExpectedResult = expectedResult;
-        }
+        
 
         #endregion
     }

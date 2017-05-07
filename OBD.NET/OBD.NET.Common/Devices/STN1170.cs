@@ -9,7 +9,7 @@ namespace OBD.NET.Devices
 
         #region Constructors
 
-        public STN1170(SerialConnection connection, IOBDLogger logger = null)
+        public STN1170(ISerialConnection connection, IOBDLogger logger = null)
             : base(connection, logger)
         { }
 
