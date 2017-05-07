@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Networking.Sockets;
@@ -12,7 +12,6 @@ namespace OBD.NET.Communication
     {
 
         private StreamSocket _socket;
-        private DataReader _reader;
         private DataWriter _writer;
 
         private readonly byte[] _readBuffer = new byte[1024];
@@ -51,7 +50,8 @@ namespace OBD.NET.Communication
                     service.ConnectionServiceName);
                 _writer = new DataWriter(_socket.OutputStream);
                 StartReader();
-                
+                IsOpen = true;
+
 
             }
         }
@@ -60,24 +60,24 @@ namespace OBD.NET.Communication
         {
             Task.Factory.StartNew(async () =>
             {
-                _reader = new DataReader(_socket.InputStream);
+
+                var buffer = _readBuffer.AsBuffer();
                 while (true)
                 {
-                    await _reader.LoadAsync(1);
-                    var data = _reader.ReadByte();
-                    _readBuffer[0] = data;
-                    SerialPortOnDataReceived();
+                    var readData = await _socket.InputStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.Partial);
+                    SerialPortOnDataReceived(readData);
                 }
+                
 
             });
         }
 
-        private void SerialPortOnDataReceived()
+        private void SerialPortOnDataReceived(IBuffer buffer)
         {
-            int count = 1;
-            for (int i = 0; i < count; i++)
+            
+            for (uint i = 0; i < buffer.Length; i++)
             {
-                char c = (char)_readBuffer[i];
+                char c = (char)buffer.GetByte(i);
                 switch (c)
                 {
                     case '\r':
