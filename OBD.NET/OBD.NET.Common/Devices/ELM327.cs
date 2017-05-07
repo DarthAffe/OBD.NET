@@ -9,6 +9,7 @@ using OBD.NET.Events.EventArgs;
 using OBD.NET.Extensions;
 using OBD.NET.Logging;
 using OBD.NET.OBDData;
+using System.Threading.Tasks;
 
 namespace OBD.NET.Devices
 {
@@ -81,9 +82,51 @@ namespace OBD.NET.Devices
             }
         }
 
+        public override async Task InitializeAsync()
+        {
+            await base.InitializeAsync();
+
+            Logger?.WriteLine("Initializing ...", OBDLogLevel.Debug);
+
+            try
+            {
+                Logger?.WriteLine("Resetting Device ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.ResetDevice);
+                Thread.Sleep(1000);
+
+                Logger?.WriteLine("Turning Echo Off ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.EchoOff);
+
+                Logger?.WriteLine("Turning Linefeeds Off ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.LinefeedsOff);
+
+                Logger?.WriteLine("Turning Headers Off ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.HeadersOff);
+
+                Logger?.WriteLine("Turning Spaced Off ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.PrintSpacesOff);
+
+                Logger?.WriteLine("Setting the Protocol to 'Auto' ...", OBDLogLevel.Debug);
+                await SendCommandAsync(ATCommand.SetProtocolAuto);
+
+                await Task.Delay(1000); //TODO CHECK
+            }
+            // DarthAffe 21.02.2017: This seems to happen sometimes, i don't know why - just retry.
+            catch
+            {
+                Logger?.WriteLine("Failed to initialize the device!", OBDLogLevel.Error);
+                throw;
+            }
+        }
+
         public virtual void SendCommand(ATCommand command)
         {
             SendCommand(command.Command);
+        }
+
+        public virtual async Task SendCommandAsync(ATCommand command)
+        {
+            await SendCommandAsync(command.Command);
         }
 
         public virtual void RequestData<T>()
@@ -95,10 +138,25 @@ namespace OBD.NET.Devices
             RequestData(pid);
         }
 
+        public virtual async Task RequestDataAsync<T>()
+           where T : class, IOBDData, new()
+        {
+            Logger?.WriteLine("Requesting Type " + typeof(T).Name + " ...", OBDLogLevel.Debug);
+
+            byte pid = ResolvePid<T>();
+            await RequestDataAsync(pid);
+        }
+
         protected virtual void RequestData(byte pid)
         {
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
             SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
+        }
+
+        protected virtual async Task RequestDataAsync(byte pid)
+        {
+            Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
+            await SendCommandAsync(((byte)Mode).ToString("X2") + pid.ToString("X2"));
         }
 
         protected override void ProcessMessage(string message)

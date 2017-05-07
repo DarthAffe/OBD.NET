@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OBD.NET.Communication
 {
@@ -101,6 +102,16 @@ namespace OBD.NET.Communication
         public void Dispose()
         {
             _serialPort?.Dispose();
+        }
+
+        public Task ConnectAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task WriteAsync(string text)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

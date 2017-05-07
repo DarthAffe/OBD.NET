@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OBD.NET.Communication
 {
@@ -29,12 +30,24 @@ namespace OBD.NET.Communication
         /// </summary>
         void Connect();
 
+        /// <summary>
+        /// Connects the serial port async
+        /// </summary>
+        /// <returns></returns>
+        Task ConnectAsync();
+
 
         /// <summary>
         /// Writes the specified text to the serial connection
         /// </summary>
         /// <param name="text">The text.</param>
         void Write(string text);
-        
+
+        /// <summary>
+        /// Writes the specified text to the serial connection async
+        /// </summary>
+        /// <param name="text">The text.</param>
+        Task WriteAsync(string text);
+
     }
 }
