@@ -106,12 +106,12 @@ namespace OBD.NET.Communication
 
         public Task ConnectAsync()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Asynchronous operations not supported");
         }
 
         public Task WriteAsync(string text)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Asynchronous operations not supported");
         }
 
         #endregion

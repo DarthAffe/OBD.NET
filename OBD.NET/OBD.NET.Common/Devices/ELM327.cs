@@ -23,7 +23,7 @@ namespace OBD.NET.Devices
         protected static Dictionary<byte, Type> DataTypeCache { get; } = new Dictionary<byte, Type>();
 
         protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
-
+        
         #endregion
 
         #region Events 
@@ -50,16 +50,15 @@ namespace OBD.NET.Devices
             base.Initialize();
 
             Logger?.WriteLine("Initializing ...", OBDLogLevel.Debug);
-
+            
             try
             {
                 Logger?.WriteLine("Resetting Device ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.ResetDevice);
-                Thread.Sleep(1000);
 
                 Logger?.WriteLine("Turning Echo Off ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.EchoOff);
-
+                
                 Logger?.WriteLine("Turning Linefeeds Off ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.LinefeedsOff);
 
@@ -72,7 +71,6 @@ namespace OBD.NET.Devices
                 Logger?.WriteLine("Setting the Protocol to 'Auto' ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.SetProtocolAuto);
 
-                Thread.Sleep(1000);
             }
             // DarthAffe 21.02.2017: This seems to happen sometimes, i don't know why - just retry.
             catch
@@ -87,29 +85,27 @@ namespace OBD.NET.Devices
             await base.InitializeAsync();
 
             Logger?.WriteLine("Initializing ...", OBDLogLevel.Debug);
-
+            
             try
             {
                 Logger?.WriteLine("Resetting Device ...", OBDLogLevel.Debug);
                 await SendCommandAsync(ATCommand.ResetDevice);
-                Thread.Sleep(1000);
-
                 Logger?.WriteLine("Turning Echo Off ...", OBDLogLevel.Debug);
                 await SendCommandAsync(ATCommand.EchoOff);
 
                 Logger?.WriteLine("Turning Linefeeds Off ...", OBDLogLevel.Debug);
                 await SendCommandAsync(ATCommand.LinefeedsOff);
-
+                
                 Logger?.WriteLine("Turning Headers Off ...", OBDLogLevel.Debug);
                 await SendCommandAsync(ATCommand.HeadersOff);
-
+                
                 Logger?.WriteLine("Turning Spaced Off ...", OBDLogLevel.Debug);
                 await SendCommandAsync(ATCommand.PrintSpacesOff);
-
+                
                 Logger?.WriteLine("Setting the Protocol to 'Auto' ...", OBDLogLevel.Debug);
-                await SendCommandAsync(ATCommand.SetProtocolAuto);
+                await SendCommandAsync(ATCommand.SetProtocolAuto); //TODO rewrite
 
-                await Task.Delay(1000); //TODO CHECK
+                
             }
             // DarthAffe 21.02.2017: This seems to happen sometimes, i don't know why - just retry.
             catch
@@ -213,7 +209,7 @@ namespace OBD.NET.Devices
                 if (sendCloseProtocol)
                 {
                     SendCommand(ATCommand.CloseProtocol);
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                 }
             }
             catch { }
