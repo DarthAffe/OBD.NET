@@ -89,6 +89,7 @@ namespace OBD.NET.Devices
                 throw;
             }
         }
+        
 
         public virtual void SendCommand(ATCommand command)
         {
@@ -164,12 +165,11 @@ namespace OBD.NET.Devices
                 if (sendCloseProtocol)
                 {
                     SendCommand(ATCommand.CloseProtocol);
-                    //Thread.Sleep(500);
                 }
             }
             catch { }
 
-            _dataReceivedEventHandlers = null;
+            _dataReceivedEventHandlers.Clear();
 
             base.Dispose();
         }

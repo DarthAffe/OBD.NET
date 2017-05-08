@@ -203,21 +203,22 @@ namespace OBD.NET.Devices
             while (!commandCancellationToken.IsCancellationRequested)
             {
                 string command = null;
-                commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token);
-                Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
-
-                if (Connection.IsAsync)
+                if(commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token))
                 {
-                    await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
-                }
-                else
-                {
-                    Connection.Write(Encoding.ASCII.GetBytes(command));
+                    Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-                }
-                //wait for command to finish
-                commandFinishedEvent.WaitOne();
+                    if (Connection.IsAsync)
+                    {
+                        await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
+                    }
+                    else
+                    {
+                        Connection.Write(Encoding.ASCII.GetBytes(command));
 
+                    }
+                    //wait for command to finish
+                    commandFinishedEvent.WaitOne();   
+                }
             }
         }
 
