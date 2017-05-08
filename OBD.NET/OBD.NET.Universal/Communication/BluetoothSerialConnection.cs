@@ -6,6 +6,7 @@ using OBD.NET.Common.Communication.EventArgs;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
+using System.Linq;
 
 namespace OBD.NET.Communication
 {
@@ -84,12 +85,26 @@ namespace OBD.NET.Communication
         {
             var services = await Windows.Devices.Enumeration.DeviceInformation
                 .FindAllAsync(RfcommDeviceService.GetDeviceSelector(RfcommServiceId.SerialPort));
-
+            
             //use first serial service
             if (services.Count > 0)
             {
-                // Initialize the target Bluetooth BR device
-                var service = await RfcommDeviceService.FromIdAsync(services[0].Id);
+                var id = services[0].Id;
+
+                //use predefined device from constructor
+                if (!string.IsNullOrWhiteSpace(device))
+                {
+                    id = services.Where(x => x.Name.Equals(device, StringComparison.OrdinalIgnoreCase))
+                        .Select(x => x.Id).FirstOrDefault();
+
+                    if (id == null)
+                    {
+                        throw new InvalidOperationException($"Device {device} not found");
+                    }
+                }
+
+                // Initialize the target Bluetooth device
+                var service = await RfcommDeviceService.FromIdAsync(id);
 
                 // Check that the service meets this App's minimum requirement
 
