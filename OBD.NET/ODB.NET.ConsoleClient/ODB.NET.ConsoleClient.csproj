@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{14CB98E1-95DE-4923-8896-FDF5171AA49E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ODB.NET.Desktop</RootNamespace>
-    <AssemblyName>ODB.NET.Desktop</AssemblyName>
+    <ProjectGuid>{8F8EC5D5-94BD-47CF-9714-CA8C0198BDDC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ODB.NET.ConsoleClient</RootNamespace>
+    <AssemblyName>ODB.NET.ConsoleClient</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,15 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\EnhancedSerialPort.cs" />
-    <Compile Include="Communication\SerialConnection.cs" />
-    <Compile Include="Logging\ODBConsoleLogger.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\OBD.NET.Common\OBD.NET.Common.csproj">
-      <Project>{d985b70e-cdf3-4cf1-ab5d-8d19c7fe7b31}</Project>
+      <Project>{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}</Project>
       <Name>OBD.NET.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ODB.NET.Desktop\ODB.NET.Desktop.csproj">
+      <Project>{14CB98E1-95DE-4923-8896-FDF5171AA49E}</Project>
+      <Name>ODB.NET.Desktop</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
