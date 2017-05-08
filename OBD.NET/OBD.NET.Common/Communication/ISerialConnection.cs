@@ -1,7 +1,5 @@
 ﻿using OBD.NET.Common.Communication.EventArgs;
 using System;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OBD.NET.Communication
@@ -23,9 +21,10 @@ namespace OBD.NET.Communication
         /// <summary>
         /// Gets a value indicating whether this instance uses asynchronous IO
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is asynchronous; otherwise, <c>false</c>.
-        /// </value>
+        /// <remarks>
+        /// Has to be set to true if asynchronous IO is supported. 
+        /// If true async methods have to be implemented
+        /// </remarks>
         bool IsAsync { get; }
 
         /// <summary>
@@ -43,8 +42,7 @@ namespace OBD.NET.Communication
         /// </summary>
         /// <returns></returns>
         Task ConnectAsync();
-
-
+        
         /// <summary>
         /// Writes the specified data to the serial connection
         /// </summary>

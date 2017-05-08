@@ -22,6 +22,7 @@ namespace OBD.NET.Devices
         private readonly AutoResetEvent commandFinishedEvent = new AutoResetEvent(false);
 
         private Task commandWorkerTask;
+
         private CancellationTokenSource commandCancellationToken;
         
         /// <summary>
@@ -38,15 +39,24 @@ namespace OBD.NET.Devices
         /// Terminator of the protocol message
         /// </summary>
         protected char Terminator { get; set; }
-                
-        
+
+
         #region Constructors
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="SerialDevice"/> class from being created.
+        /// </summary>
         private SerialDevice()
         {
             commandQueue = new BlockingCollection<string>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SerialDevice"/> class.
+        /// </summary>
+        /// <param name="connection">connection.</param>
+        /// <param name="terminator">terminator used for terminating the command message</param>
+        /// <param name="logger">logger instance</param>
         protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
             :this()
         {
@@ -66,19 +76,25 @@ namespace OBD.NET.Devices
         /// <summary>
         /// Initializes the device
         /// </summary>
-        public virtual async void Initialize()
+        public virtual void Initialize()
         {
-            if (Connection.IsAsync)
-            {
-                await Connection.ConnectAsync();
-            }
-            else
-            {
-                Connection.Connect();
-            }
+            Connection.Connect();
             CheckConnectionAndStartWorker();
         }
 
+        /// <summary>
+        /// Initializes the device
+        /// </summary>
+        public virtual async Task InitializeAsync()
+        {
+            await Connection.ConnectAsync();
+            CheckConnectionAndStartWorker();
+        }
+
+        /// <summary>
+        /// Checks the connection and starts background worker which is sending the commands
+        /// </summary>
+        /// <exception cref="SerialException">Failed to open Serial-Connection.</exception>
         private void CheckConnectionAndStartWorker()
         {
             if (!Connection.IsOpen)
@@ -95,29 +111,12 @@ namespace OBD.NET.Devices
             commandWorkerTask = Task.Factory.StartNew(CommandWorker);
         }
 
-        private async void CommandWorker()
-        {
-            while (!commandCancellationToken.IsCancellationRequested)
-            {
-                string command = null;
-                commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token);
-                Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-                if (Connection.IsAsync)
-                {
-                    await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
-                }
-                else
-                {
-                    Connection.Write(Encoding.ASCII.GetBytes(command));
-
-                }
-                //wait for command to finish
-                commandFinishedEvent.WaitOne();
-                
-            }
-        }
-
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="command">command string</param>
+        /// <exception cref="System.InvalidOperationException">Not connected</exception>
         protected virtual void SendCommand(string command)
         {
             if (!Connection.IsOpen)
@@ -145,6 +144,11 @@ namespace OBD.NET.Devices
             return command;
         }
 
+        /// <summary>
+        /// Called when data is received from the serial device
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DataReceivedEventArgs"/> instance containing the event data.</param>
         private void OnDataReceived(object sender, DataReceivedEventArgs e)
         {
             for (int i = 0; i < e.Count; i++)
@@ -171,6 +175,9 @@ namespace OBD.NET.Devices
             }
         }
 
+        /// <summary>
+        /// Signals a final message
+        /// </summary>
         private void FinishLine()
         {
             string line = _lineBuffer.ToString().Trim();
@@ -182,11 +189,45 @@ namespace OBD.NET.Devices
             ProcessMessage(line);
         }
 
-        
+        /// <summary>
+        /// Processes the message.
+        /// </summary>
+        /// <param name="message">message received</param>
         protected abstract void ProcessMessage(string message);
-        
+
+        /// <summary>
+        /// Worker method for sending commands
+        /// </summary>
+        private async void CommandWorker()
+        {
+            while (!commandCancellationToken.IsCancellationRequested)
+            {
+                string command = null;
+                commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token);
+                Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
+
+                if (Connection.IsAsync)
+                {
+                    await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
+                }
+                else
+                {
+                    Connection.Write(Encoding.ASCII.GetBytes(command));
+
+                }
+                //wait for command to finish
+                commandFinishedEvent.WaitOne();
+
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public virtual void Dispose()
         {
+            commandCancellationToken?.Cancel();
+            commandWorkerTask?.Wait();
             Connection?.Dispose();
         }
 

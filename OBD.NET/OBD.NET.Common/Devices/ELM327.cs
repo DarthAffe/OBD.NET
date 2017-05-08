@@ -45,12 +45,22 @@ namespace OBD.NET.Devices
 
         #region Methods
 
+        public override async Task InitializeAsync()
+        {
+            await base.InitializeAsync();
+            InternalInitialize();
+        }
+
         public override void Initialize()
         {
             base.Initialize();
+            InternalInitialize();
+        }
 
+        private void InternalInitialize()
+        {
             Logger?.WriteLine("Initializing ...", OBDLogLevel.Debug);
-            
+
             try
             {
                 Logger?.WriteLine("Resetting Device ...", OBDLogLevel.Debug);
@@ -58,7 +68,7 @@ namespace OBD.NET.Devices
 
                 Logger?.WriteLine("Turning Echo Off ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.EchoOff);
-                
+
                 Logger?.WriteLine("Turning Linefeeds Off ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.LinefeedsOff);
 

@@ -1,8 +1,5 @@
 ﻿using OBD.NET.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace OBD.NET.Common.Logging
 {

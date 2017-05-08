@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OBD.NET.Common.Communication.EventArgs;
@@ -10,6 +9,10 @@ using Windows.Storage.Streams;
 
 namespace OBD.NET.Communication
 {
+    /// <summary>
+    /// Bluetooth OBD serial implementation
+    /// </summary>
+    /// <seealso cref="OBD.NET.Communication.ISerialConnection" />
     public class BluetoothSerialConnection : ISerialConnection
     {
 
@@ -20,15 +23,43 @@ namespace OBD.NET.Communication
         
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private Task _readerTask;
-        
+
+        private string device;
+
         /// <summary>
-        /// Gets a value indicating whether this connection is open.
+        /// Initializes a new instance of the <see cref="BluetoothSerialConnection"/> class.
+        /// </summary>
+        public BluetoothSerialConnection()
+        {
+            device = null;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BluetoothSerialConnection"/> class.
+        /// </summary>
+        /// <param name="deviceName">Name of the device.</param>
+        /// <param name="logger">The logger.</param>
+        public BluetoothSerialConnection(string deviceName)
+        {
+            device = deviceName;
+        }
+
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is open.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this connection is open; otherwise, <c>false</c>.
+        /// <c>true</c> if this instance is open; otherwise, <c>false</c>.
         /// </value>
         public bool IsOpen { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance uses asynchronous IO
+        /// </summary>
+        /// <remarks>
+        /// Has to be set to true if asynchronous IO is supported.
+        /// If true async methods have to be implemented
+        /// </remarks>
         public bool IsAsync => true;
 
         /// <summary>
@@ -42,7 +73,7 @@ namespace OBD.NET.Communication
         /// <exception cref="System.NotSupportedException">Synchronous operations not supported</exception>
         public void Connect()
         {
-            throw new NotSupportedException("Synchronous operations not supported");
+            throw new NotSupportedException("Synchronous operations not supported on UWP platform");
         }
 
         /// <summary>
@@ -78,7 +109,7 @@ namespace OBD.NET.Communication
         /// <exception cref="System.NotImplementedException">Synchronous operations not supported</exception>
         public void Write(byte[] data)
         {
-            throw new NotImplementedException("Synchronous operations not supported");
+            throw new NotImplementedException("Synchronous operations not supported on UWP platform");
         }
 
         /// <summary>
