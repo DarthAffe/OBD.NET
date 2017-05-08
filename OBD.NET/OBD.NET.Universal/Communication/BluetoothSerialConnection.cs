@@ -3,6 +3,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OBD.NET.Common.Communication.EventArgs;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
@@ -16,8 +17,7 @@ namespace OBD.NET.Communication
         private DataWriter _writer;
 
         private readonly byte[] _readBuffer = new byte[1024];
-        private readonly StringBuilder _lineBuffer = new StringBuilder();
-
+        
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private Task _readerTask;
         
@@ -32,7 +32,7 @@ namespace OBD.NET.Communication
         /// <summary>
         /// Occurs when a full line was received
         /// </summary>
-        public event EventHandler<string> MessageReceived;
+        public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         /// <summary>
         /// Connects the serial port.
@@ -74,7 +74,7 @@ namespace OBD.NET.Communication
         /// </summary>
         /// <param name="text">The text.</param>
         /// <exception cref="System.NotImplementedException">Synchronous operations not supported</exception>
-        public void Write(string text)
+        public void Write(byte[] data)
         {
             throw new NotImplementedException("Synchronous operations not supported");
         }
@@ -84,9 +84,9 @@ namespace OBD.NET.Communication
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns></returns>
-        public async Task WriteAsync(string text)
+        public async Task WriteAsync(byte[] data)
         {
-            _writer.WriteString(text);
+            _writer.WriteBytes(data);
             await _writer.StoreAsync();
             await _writer.FlushAsync();
         }
@@ -107,38 +107,10 @@ namespace OBD.NET.Communication
 
         private void SerialPortOnDataReceived(IBuffer buffer)
         {
-            
-            for (uint i = 0; i < buffer.Length; i++)
-            {
-                char c = (char)buffer.GetByte(i);
-                switch (c)
-                {
-                    case '\r':
-                        FinishLine();
-                        break;
-
-                    case '>':
-                        continue; //ignore
-
-                    case '\n':
-                    case (char)0x00:
-                        break; // ignore
-
-                    default:
-                        _lineBuffer.Append(c);
-                        break;
-                }
-            }
+            DataReceived?.Invoke(this, new DataReceivedEventArgs((int)buffer.Length, _readBuffer));
         }
 
-        private void FinishLine()
-        {
-            string line = _lineBuffer.ToString();
-            _lineBuffer.Clear();
-
-            MessageReceived?.Invoke(this, line);
-        }
-
+   
         public void Dispose()
         {
             _cancellationTokenSource?.Cancel();
@@ -146,6 +118,5 @@ namespace OBD.NET.Communication
             _socket?.Dispose();
         }
 
-        
     }
 }

@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OBD.NET.Common.Communication.EventArgs;
 
 namespace OBD.NET.Communication
 {
@@ -24,7 +25,7 @@ namespace OBD.NET.Communication
 
         #region Events
 
-        public event EventHandler<string> MessageReceived;
+        public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         #endregion
 
@@ -52,53 +53,15 @@ namespace OBD.NET.Communication
         public void Connect()
         {
             _serialPort.Open();
-            Thread.Sleep(5000);
-            Write("\r");
-        }
-
-        public void Write(string text)
-        {
-            if (!_hasPrompt.WaitOne(_timeout))
-                throw new TimeoutException("No prompt received");
-
-            _serialPort.Write(text);
         }
 
         private void SerialPortOnDataReceived(object sender, SerialDataReceivedEventArgs serialDataReceivedEventArgs)
         {
             int count = _serialPort.Read(_readBuffer, 0, _serialPort.BytesToRead);
-            for (int i = 0; i < count; i++)
-            {
-                char c = (char)_readBuffer[i];
-                switch (c)
-                {
-                    case '\r':
-                        FinishLine();
-                        break;
-
-                    case '>':
-                        _hasPrompt.Set();
-                        break;
-
-                    case '\n':
-                    case (char)0x00:
-                        break; // ignore
-
-                    default:
-                        _lineBuffer.Append(c);
-                        break;
-                }
-            }
+            DataReceived?.Invoke(this,new DataReceivedEventArgs(count, _readBuffer));
         }
 
-        private void FinishLine()
-        {
-            string line = _lineBuffer.ToString();
-            _lineBuffer.Clear();
-
-            MessageReceived?.Invoke(this, line);
-        }
-
+        
         public void Dispose()
         {
             _serialPort?.Dispose();
@@ -109,10 +72,18 @@ namespace OBD.NET.Communication
             throw new NotSupportedException("Asynchronous operations not supported");
         }
 
-        public Task WriteAsync(string text)
+        public Task WriteAsync(byte[] data)
         {
             throw new NotSupportedException("Asynchronous operations not supported");
         }
+
+      
+        public void Write(byte[] data)
+        {
+            _serialPort.Write(data, 0, data.Length);
+        }
+
+       
 
         #endregion
     }

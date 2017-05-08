@@ -4,6 +4,9 @@ using OBD.NET.Exceptions;
 using OBD.NET.Logging;
 using System.Threading.Tasks;
 using OBD.NET.Common.Communication.EventArgs;
+using System.Text;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace OBD.NET.Devices
 { 
@@ -12,8 +15,15 @@ namespace OBD.NET.Devices
     /// </summary>
     public abstract class SerialDevice : IDisposable
     {
-        private System.Collections.Generic.Queue<string> commandQueue;
+        private BlockingCollection<string> commandQueue;
 
+        private readonly StringBuilder _lineBuffer = new StringBuilder();
+
+        private readonly AutoResetEvent commandFinishedEvent = new AutoResetEvent(true);
+
+        private Task commandWorkerTask;
+        private CancellationTokenSource commandCancellationToken;
+        
         /// <summary>
         /// Logger instance
         /// </summary>
@@ -34,7 +44,7 @@ namespace OBD.NET.Devices
 
         private SerialDevice()
         {
-            commandQueue = new System.Collections.Generic.Queue<string>();
+            commandQueue = new BlockingCollection<string>();
         }
 
         protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
@@ -49,12 +59,7 @@ namespace OBD.NET.Devices
 
 
         #endregion
-
-        private void OnDataReceived(object sender, DataReceivedEventArgs e)
-        {
-
-        }
-
+        
         #region Methods
 
         
@@ -63,22 +68,21 @@ namespace OBD.NET.Devices
         /// </summary>
         public virtual void Initialize()
         {
-
             Connection.Connect();
-            CheckConnection();
+            CheckConnectionAndStartWorker();
         }
 
         /// <summary>
-        /// Initializes the device async
+        /// Initializes the device asynchronously
         /// </summary>
         /// <returns></returns>
         public virtual async Task InitializeAsync()
         {
             await Connection.ConnectAsync();
-            CheckConnection();
+            CheckConnectionAndStartWorker();
         }
 
-        private void CheckConnection()
+        private void CheckConnectionAndStartWorker()
         {
             if (!Connection.IsOpen)
             {
@@ -86,23 +90,37 @@ namespace OBD.NET.Devices
                 throw new SerialException("Failed to open Serial-Connection.");
             }
             else
+            { 
                 Logger?.WriteLine("Opened Serial-Connection!", OBDLogLevel.Debug);
+            }
+
+            commandWorkerTask = Task.Factory.StartNew(CommandWorker);
         }
 
-        
+        private void CommandWorker()
+        {
+            while (!commandCancellationToken.IsCancellationRequested)
+            {
+                string command = null;
+                commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token);
+                Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
+                Connection.Write(Encoding.ASCII.GetBytes(command));
+
+                //wait for command to finish
+                commandFinishedEvent.WaitOne();
+            }
+        }
 
         protected virtual void SendCommand(string command)
         {
             if (!Connection.IsOpen)
             {
                 throw new InvalidOperationException("Not connected");
-            } 
+            }
 
             command = PrepareCommand(command);
             Logger?.WriteLine("Queuing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
-            commandQueue.Enqueue(command);
-//            Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
- //           Connection.Write(command);
+            commandQueue.Add(command);         
         }
         
         /// <summary>
@@ -119,6 +137,40 @@ namespace OBD.NET.Devices
 
             return command;
         }
+
+        private void OnDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            for (int i = 0; i < e.Count; i++)
+            {
+                char c = (char)e.Data[i];
+                switch (c)
+                {
+                    case '\r':
+                        FinishLine();
+                        break;
+
+                    case '>':
+                        commandFinishedEvent.Set();
+                        break;
+
+                    case '\n':
+                    case (char)0x00:
+                        break; // ignore
+
+                    default:
+                        _lineBuffer.Append(c);
+                        break;
+                }
+            }
+        }
+
+        private void FinishLine()
+        {
+            string line = _lineBuffer.ToString();
+            _lineBuffer.Clear();
+            ProcessMessage(line);
+        }
+
 
         private void SerialMessageReceived(object sender, string message)
         {

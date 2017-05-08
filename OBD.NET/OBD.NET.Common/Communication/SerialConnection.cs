@@ -29,13 +29,13 @@ namespace OBD.NET.Communication
         /// <summary>
         /// Connects the serial port.
         /// </summary>
-        bool Connect();
+        void Connect();
 
         /// <summary>
         /// Connects the serial port async
         /// </summary>
         /// <returns></returns>
-        Task<bool> ConnectAsync();
+        Task ConnectAsync();
 
 
         /// <summary>
