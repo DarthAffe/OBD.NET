@@ -15,6 +15,7 @@ namespace OBD.NET.Communication
         private readonly int _timeout;
 
         public bool IsOpen => _serialPort?.IsOpen ?? false;
+        public bool IsAsync => false;
 
         private readonly byte[] _readBuffer = new byte[1024];
         private readonly StringBuilder _lineBuffer = new StringBuilder();

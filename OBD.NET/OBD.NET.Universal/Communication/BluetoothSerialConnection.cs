@@ -29,6 +29,8 @@ namespace OBD.NET.Communication
         /// </value>
         public bool IsOpen { get; private set; }
 
+        public bool IsAsync => true;
+
         /// <summary>
         /// Occurs when a full line was received
         /// </summary>

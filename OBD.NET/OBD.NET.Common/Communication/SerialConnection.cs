@@ -21,10 +21,17 @@ namespace OBD.NET.Communication
         bool IsOpen { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance uses asynchronous IO
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is asynchronous; otherwise, <c>false</c>.
+        /// </value>
+        bool IsAsync { get; }
+
+        /// <summary>
         /// Occurs when a full line was received
         /// </summary>
         event EventHandler<DataReceivedEventArgs> DataReceived;
-
 
         /// <summary>
         /// Connects the serial port.
@@ -32,7 +39,7 @@ namespace OBD.NET.Communication
         void Connect();
 
         /// <summary>
-        /// Connects the serial port async
+        /// Connects the serial port asynchronous
         /// </summary>
         /// <returns></returns>
         Task ConnectAsync();
@@ -45,7 +52,7 @@ namespace OBD.NET.Communication
         void Write(byte[] data);
 
         /// <summary>
-        /// Writes the specified data to the serial connection async
+        /// Writes the specified data to the serial connection asynchronous
         /// </summary>
         /// <param name="text">The text.</param>
         Task WriteAsync(byte[] data);

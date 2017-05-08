@@ -19,7 +19,7 @@ namespace OBD.NET.Devices
 
         private readonly StringBuilder _lineBuffer = new StringBuilder();
 
-        private readonly AutoResetEvent commandFinishedEvent = new AutoResetEvent(true);
+        private readonly AutoResetEvent commandFinishedEvent = new AutoResetEvent(false);
 
         private Task commandWorkerTask;
         private CancellationTokenSource commandCancellationToken;
@@ -66,19 +66,16 @@ namespace OBD.NET.Devices
         /// <summary>
         /// Initializes the device
         /// </summary>
-        public virtual void Initialize()
+        public virtual async void Initialize()
         {
-            Connection.Connect();
-            CheckConnectionAndStartWorker();
-        }
-
-        /// <summary>
-        /// Initializes the device asynchronously
-        /// </summary>
-        /// <returns></returns>
-        public virtual async Task InitializeAsync()
-        {
-            await Connection.ConnectAsync();
+            if (Connection.IsAsync)
+            {
+                await Connection.ConnectAsync();
+            }
+            else
+            {
+                Connection.Connect();
+            }
             CheckConnectionAndStartWorker();
         }
 
@@ -94,20 +91,30 @@ namespace OBD.NET.Devices
                 Logger?.WriteLine("Opened Serial-Connection!", OBDLogLevel.Debug);
             }
 
+            commandCancellationToken = new CancellationTokenSource();
             commandWorkerTask = Task.Factory.StartNew(CommandWorker);
         }
 
-        private void CommandWorker()
+        private async void CommandWorker()
         {
             while (!commandCancellationToken.IsCancellationRequested)
             {
                 string command = null;
                 commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token);
                 Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
-                Connection.Write(Encoding.ASCII.GetBytes(command));
 
+                if (Connection.IsAsync)
+                {
+                    await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
+                }
+                else
+                {
+                    Connection.Write(Encoding.ASCII.GetBytes(command));
+
+                }
                 //wait for command to finish
                 commandFinishedEvent.WaitOne();
+                
             }
         }
 
@@ -166,20 +173,16 @@ namespace OBD.NET.Devices
 
         private void FinishLine()
         {
-            string line = _lineBuffer.ToString();
+            string line = _lineBuffer.ToString().Trim();
             _lineBuffer.Clear();
+
+            if (string.IsNullOrWhiteSpace(line)) return;
+            Logger?.WriteLine("Response: '" + line + "'", OBDLogLevel.Verbose);
+
             ProcessMessage(line);
         }
 
-
-        private void SerialMessageReceived(object sender, string message)
-        {
-            if (string.IsNullOrWhiteSpace(message)) return;
-
-            Logger?.WriteLine("Response: '" + message + "'", OBDLogLevel.Verbose);
-            ProcessMessage(message.Trim());
-        }
-
+        
         protected abstract void ProcessMessage(string message);
         
         public virtual void Dispose()
