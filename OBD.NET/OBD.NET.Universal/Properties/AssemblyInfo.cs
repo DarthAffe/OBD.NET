@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OBD.NET.Universal")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter on UWP")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OBD.NET.Universal")]
+[assembly: AssemblyCompany("Roman Lumetsberger")]
+[assembly: AssemblyProduct("OBD.NET")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
