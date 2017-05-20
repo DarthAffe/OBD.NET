@@ -7,6 +7,7 @@
     <Product>OBD.NET</Product>
     <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
