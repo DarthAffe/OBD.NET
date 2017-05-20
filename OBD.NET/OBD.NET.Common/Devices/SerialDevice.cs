@@ -7,6 +7,7 @@ using OBD.NET.Common.Communication.EventArgs;
 using System.Text;
 using System.Threading;
 using System.Collections.Concurrent;
+using OBD.NET.Common.Devices;
 
 namespace OBD.NET.Devices
 { 
@@ -15,7 +16,7 @@ namespace OBD.NET.Devices
     /// </summary>
     public abstract class SerialDevice : IDisposable
     {
-        private BlockingCollection<string> commandQueue;
+        private BlockingCollection<QueuedCommand> commandQueue;
 
         private readonly StringBuilder _lineBuffer = new StringBuilder();
 
@@ -24,6 +25,8 @@ namespace OBD.NET.Devices
         private Task commandWorkerTask;
 
         private CancellationTokenSource commandCancellationToken;
+
+        protected QueuedCommand currentCommand;
         
         /// <summary>
         /// Logger instance
@@ -48,7 +51,7 @@ namespace OBD.NET.Devices
         /// </summary>
         private SerialDevice()
         {
-            commandQueue = new BlockingCollection<string>();
+            commandQueue = new BlockingCollection<QueuedCommand>();
         }
 
         /// <summary>
@@ -117,16 +120,20 @@ namespace OBD.NET.Devices
         /// </summary>
         /// <param name="command">command string</param>
         /// <exception cref="System.InvalidOperationException">Not connected</exception>
-        protected virtual void SendCommand(string command)
+        protected virtual CommandResult SendCommand(string command)
         {
             if (!Connection.IsOpen)
             {
                 throw new InvalidOperationException("Not connected");
             }
 
+            
             command = PrepareCommand(command);
             Logger?.WriteLine("Queuing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
-            commandQueue.Add(command);         
+
+            var cmd = new QueuedCommand(command);
+            commandQueue.Add(cmd);
+            return cmd.CommandResult;
         }
         
         /// <summary>
@@ -161,6 +168,7 @@ namespace OBD.NET.Devices
                         break;
 
                     case '>':
+                        currentCommand.CommandResult.WaitHandle.Set();
                         commandFinishedEvent.Set();
                         break;
 
@@ -186,14 +194,25 @@ namespace OBD.NET.Devices
             if (string.IsNullOrWhiteSpace(line)) return;
             Logger?.WriteLine("Response: '" + line + "'", OBDLogLevel.Verbose);
 
-            ProcessMessage(line);
+            InternalProcessMessage(line);
+        }
+
+        /// <summary>
+        /// Process message and sets the result 
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private void InternalProcessMessage(string message)
+        {
+            var data = ProcessMessage(message);
+            currentCommand.CommandResult.Result = data;
         }
 
         /// <summary>
         /// Processes the message.
         /// </summary>
         /// <param name="message">message received</param>
-        protected abstract void ProcessMessage(string message);
+        /// <returns>result data</returns>
+        protected abstract object ProcessMessage(string message);
 
         /// <summary>
         /// Worker method for sending commands
@@ -202,18 +221,18 @@ namespace OBD.NET.Devices
         {
             while (!commandCancellationToken.IsCancellationRequested)
             {
-                string command = null;
-                if(commandQueue.TryTake(out command, Timeout.Infinite, commandCancellationToken.Token))
+                currentCommand = null;
+                if(commandQueue.TryTake(out currentCommand, Timeout.Infinite, commandCancellationToken.Token))
                 {
-                    Logger?.WriteLine("Writing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
+                    Logger?.WriteLine("Writing Command: '" + currentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
                     if (Connection.IsAsync)
                     {
-                        await Connection.WriteAsync(Encoding.ASCII.GetBytes(command));
+                        await Connection.WriteAsync(Encoding.ASCII.GetBytes(currentCommand.CommandText));
                     }
                     else
                     {
-                        Connection.Write(Encoding.ASCII.GetBytes(command));
+                        Connection.Write(Encoding.ASCII.GetBytes(currentCommand.CommandText));
 
                     }
                     //wait for command to finish

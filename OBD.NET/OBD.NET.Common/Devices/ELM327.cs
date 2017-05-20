@@ -89,13 +89,21 @@ namespace OBD.NET.Devices
                 throw;
             }
         }
-        
 
+
+        /// <summary>
+        /// Sends the AT command.
+        /// </summary>
+        /// <param name="command">The command.</param>
         public virtual void SendCommand(ATCommand command)
         {
             SendCommand(command.Command);
         }
-        
+
+        /// <summary>
+        /// Requests the data and calls the handler
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public virtual void RequestData<T>()
             where T : class, IOBDData, new()
         {
@@ -111,13 +119,33 @@ namespace OBD.NET.Devices
             SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
         }
 
-        protected override void ProcessMessage(string message)
+        /// <summary>
+        /// Requests the data asynchronous and return the data when available
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<T> RequestDataAsync<T>()
+            where T : class, IOBDData, new()
+        {
+            Logger?.WriteLine("Requesting Type " + typeof(T).Name + " ...", OBDLogLevel.Debug);
+            byte pid = ResolvePid<T>();
+            Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
+            var result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
+
+            await result.WaitHandle.WaitAsync();
+            return result.Result as T;
+        }
+
+        
+
+        protected override object ProcessMessage(string message)
         {
             DateTime timestamp = DateTime.Now;
 
             RawDataReceived?.Invoke(this, new RawDataReceivedEventArgs(message, timestamp));
 
             if (message.Length > 4)
+            { 
                 if (message[0] == '4')
                 {
                     byte mode = (byte)message[1].GetHexVal();
@@ -129,13 +157,17 @@ namespace OBD.NET.Devices
                         {
                             IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
                             obdData.Load(message.Substring(4, message.Length - 4));
-
+                            
                             IDataEventManager dataEventManager;
                             if (_dataReceivedEventHandlers.TryGetValue(dataType, out dataEventManager))
                                 dataEventManager.RaiseEvent(this, obdData, timestamp);
+
+                            return obdData;
                         }
                     }
                 }
+            }
+            return null;
         }
 
         protected virtual byte ResolvePid<T>()
