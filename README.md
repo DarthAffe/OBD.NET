@@ -45,7 +45,33 @@ class Program
             }
             Console.ReadLine();
         }
-        
+
+        //Async example
+        MainAsync(comPort).Wait();
+
+    }
+
+    /// <summary>
+    /// Async example using new RequestDataAsync
+    /// </summary>
+    /// <param name="comPort">The COM port.</param>
+    /// <returns></returns>
+    public static async Task MainAsync(string comPort)
+    {
+        using (SerialConnection connection = new SerialConnection(comPort))
+        using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
+        {
+            dev.Initialize();
+            var data = await dev.RequestDataAsync<EngineRPM>();
+            Console.WriteLine("Data: " + data.Rpm);
+            data = await dev.RequestDataAsync<EngineRPM>();
+            Console.WriteLine("Data: " + data.Rpm);
+            var data2 = await dev.RequestDataAsync<VehicleSpeed>();
+            Console.WriteLine("Data: " + data2.Speed);
+            data = await dev.RequestDataAsync<EngineRPM>();
+            Console.WriteLine("Data: " + data.Rpm);
+
+        }
     }
 }
 ```
