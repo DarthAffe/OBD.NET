@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OBD.NET.OBDData
+namespace OBD.NET.Common.OBDData
 {
     public class PidsSupported01_20 : AbstractOBDData
     {

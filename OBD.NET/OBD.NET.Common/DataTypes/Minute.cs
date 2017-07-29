@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.DataTypes
+﻿namespace OBD.NET.Common.DataTypes
 {
     public class Minute : GenericData
     {
@@ -22,12 +22,9 @@
 
         #region Operators
 
-        public static explicit operator Second(Minute m)
-        {
-            return m.IsFloatingPointValue
-                ? new Second(m.Value * 60, m.MinValue * 60, m.MaxValue * 60)
-                : new Second((int)(m.Value * 60), (int)(m.MinValue * 60), (int)(m.MaxValue * 60));
-        }
+        public static explicit operator Second(Minute m) => m.IsFloatingPointValue
+                                                                ? new Second(m.Value * 60, m.MinValue * 60, m.MaxValue * 60)
+                                                                : new Second((int)(m.Value * 60), (int)(m.MinValue * 60), (int)(m.MaxValue * 60));
 
         #endregion
     }

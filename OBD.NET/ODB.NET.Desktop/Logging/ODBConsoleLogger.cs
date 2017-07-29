@@ -1,35 +1,39 @@
-﻿using OBD.NET.Logging;
-using System;
-using System.Diagnostics;
+﻿using System;
+using OBD.NET.Common.Logging;
 
-namespace OBD.NET.Common.Logging
+namespace ODB.NET.Desktop.Logging
 {
     /// <summary>
     /// Simple console logger
     /// </summary>
-    /// <seealso cref="OBD.NET.Logging.IOBDLogger" />
+    /// <seealso cref="IOBDLogger" />
     public class OBDConsoleLogger : IOBDLogger
     {
+        #region Properties & Fields
+
         public OBDLogLevel LogLevel { get; set; }
 
-        public OBDConsoleLogger()
+        #endregion
+
+        #region Constructors
+
+        public OBDConsoleLogger(OBDLogLevel level = OBDLogLevel.None)
         {
-            LogLevel = OBDLogLevel.None;
+            this.LogLevel = level;
         }
 
-        public OBDConsoleLogger(OBDLogLevel level)
-        {
-            LogLevel = level;
-        }
+        #endregion
+
+        #region Methods
 
         public void WriteLine(string text, OBDLogLevel level)
         {
             if (LogLevel == OBDLogLevel.None) return;
 
-            if((int)level >= (int)LogLevel)
-            { 
-                Console.WriteLine($"{DateTime.Now.ToString()} -  {level} -  {text}");
-            }
+            if ((int)level >= (int)LogLevel)
+                Console.WriteLine($"{DateTime.Now:G} -  {level} -  {text}");
         }
+
+        #endregion
     }
 }

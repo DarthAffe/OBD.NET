@@ -3,8 +3,24 @@
     /// <summary>
     /// Event args for receiving serial data
     /// </summary>
-    public class DataReceivedEventArgs:System.EventArgs
+    public class DataReceivedEventArgs : System.EventArgs
     {
+        #region Properties & Fields
+
+        /// <summary>
+        /// Count of valid data bytes in the buffer
+        /// </summary>
+        public int Count { get; }
+
+        /// <summary>
+        /// Data buffer holding the bytes
+        /// </summary>
+        public byte[] Data { get; }
+
+        #endregion
+
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DataReceivedEventArgs"/> class.
         /// </summary>
@@ -12,18 +28,10 @@
         /// <param name="data">The data.</param>
         public DataReceivedEventArgs(int count, byte[] data)
         {
-            Count = count;
-            Data = data;
+            this.Count = count;
+            this.Data = data;
         }
 
-        /// <summary>
-        /// Count of valid data bytes in the buffer
-        /// </summary>
-        public int Count { get; private set; }
-
-        /// <summary>
-        /// Data buffer holding the bytes
-        /// </summary>
-        public byte[] Data { get; private set; }
+        #endregion
     }
 }

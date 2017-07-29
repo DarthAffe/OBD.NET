@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OBD.NET.Exceptions
+namespace OBD.NET.Common.Exceptions
 {
     public class SerialException : Exception
     {
@@ -16,7 +16,7 @@ namespace OBD.NET.Exceptions
         public SerialException(string message, Exception innerException)
             : base(message, innerException)
         { }
-        
+
 
         #endregion
     }

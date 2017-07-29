@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OBD.NET.Events.EventArgs
+namespace OBD.NET.Common.Events.EventArgs
 {
     public class RawDataReceivedEventArgs
     {

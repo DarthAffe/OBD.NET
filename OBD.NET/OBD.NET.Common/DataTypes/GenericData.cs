@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OBD.NET.DataTypes
+namespace OBD.NET.Common.DataTypes
 {
     public abstract class GenericData
     {
@@ -17,7 +17,7 @@ namespace OBD.NET.DataTypes
 
         #region Constructors
 
-        public GenericData(double value, double minValue, double maxValue)
+        protected GenericData(double value, double minValue, double maxValue)
         {
             this.Value = value;
             this.MinValue = minValue;
@@ -25,7 +25,7 @@ namespace OBD.NET.DataTypes
             this.IsFloatingPointValue = true;
         }
 
-        public GenericData(int value, int minValue, int maxValue)
+        protected GenericData(int value, int minValue, int maxValue)
         {
             this.Value = value;
             this.MinValue = minValue;
@@ -37,24 +37,15 @@ namespace OBD.NET.DataTypes
 
         #region Operators
 
-        public static implicit operator double(GenericData p)
-        {
-            return p.Value;
-        }
+        public static implicit operator double(GenericData p) => p.Value;
 
-        public static implicit operator int(GenericData p)
-        {
-            return (int)Math.Round(p.Value);
-        }
+        public static implicit operator int(GenericData p) => (int)Math.Round(p.Value);
 
         #endregion
 
         #region Methods
 
-        public override string ToString()
-        {
-            return (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + (Unit == null ? string.Empty : (" " + Unit));
-        }
+        public override string ToString() => (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + (Unit == null ? string.Empty : (" " + Unit));
 
         #endregion
     }

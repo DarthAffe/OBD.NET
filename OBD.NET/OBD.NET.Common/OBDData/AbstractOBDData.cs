@@ -1,23 +1,24 @@
 ﻿using System;
-using OBD.NET.Extensions;
+using OBD.NET.Common.Extensions;
 
-namespace OBD.NET.OBDData
+namespace OBD.NET.Common.OBDData
 {
     public abstract class AbstractOBDData : IOBDData
     {
         #region Properties & Fields
 
         public byte PID { get; }
-        private int _length;
+        private readonly int _length;
 
         private byte[] _rawData;
         public byte[] RawData
         {
-            get { return _rawData; }
+            get => _rawData;
             set
             {
                 if (value.Length != _length)
                     throw new ArgumentException("The provided raw-data is not valid", nameof(value));
+
                 _rawData = value;
             }
         }
@@ -34,13 +35,13 @@ namespace OBD.NET.OBDData
 
         #region Constructors
 
-        public AbstractOBDData(byte pid, int length)
+        protected AbstractOBDData(byte pid, int length)
         {
             this.PID = pid;
             this._length = length;
         }
 
-        public AbstractOBDData(byte pid, int length, byte[] rawData)
+        protected AbstractOBDData(byte pid, int length, byte[] rawData)
             : this(pid, length)
         {
             this.RawData = rawData;

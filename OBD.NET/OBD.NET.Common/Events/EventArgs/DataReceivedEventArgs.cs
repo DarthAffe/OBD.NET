@@ -1,7 +1,7 @@
 ﻿using System;
-using OBD.NET.OBDData;
+using OBD.NET.Common.OBDData;
 
-namespace OBD.NET.Events.EventArgs
+namespace OBD.NET.Common.Events.EventArgs
 {
     public class DataReceivedEventArgs<T> where T : IOBDData
     {

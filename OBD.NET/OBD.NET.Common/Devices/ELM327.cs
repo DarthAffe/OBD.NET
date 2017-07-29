@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using OBD.NET.Commands;
-using OBD.NET.Communication;
-using OBD.NET.Enums;
-using OBD.NET.Events;
-using OBD.NET.Events.EventArgs;
-using OBD.NET.Extensions;
-using OBD.NET.Logging;
-using OBD.NET.OBDData;
 using System.Threading.Tasks;
+using OBD.NET.Common.Commands;
+using OBD.NET.Common.Communication;
+using OBD.NET.Common.Enums;
+using OBD.NET.Common.Events;
+using OBD.NET.Common.Events.EventArgs;
+using OBD.NET.Common.Extensions;
+using OBD.NET.Common.Logging;
+using OBD.NET.Common.OBDData;
 
-namespace OBD.NET.Devices
+namespace OBD.NET.Common.Devices
 {
     public class ELM327 : SerialDevice
     {
         #region Properties & Fields
 
-        protected Dictionary<Type, IDataEventManager> _dataReceivedEventHandlers = new Dictionary<Type, IDataEventManager>();
+        protected readonly Dictionary<Type, IDataEventManager> DataReceivedEventHandlers = new Dictionary<Type, IDataEventManager>();
 
         protected static Dictionary<Type, byte> PidCache { get; } = new Dictionary<Type, byte>();
         protected static Dictionary<byte, Type> DataTypeCache { get; } = new Dictionary<byte, Type>();
 
         protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
-        
+
         #endregion
 
         #region Events 
@@ -89,16 +88,12 @@ namespace OBD.NET.Devices
                 throw;
             }
         }
-
-
+        
         /// <summary>
         /// Sends the AT command.
         /// </summary>
         /// <param name="command">The command.</param>
-        public virtual void SendCommand(ATCommand command)
-        {
-            SendCommand(command.Command);
-        }
+        public virtual void SendCommand(ATCommand command) => SendCommand(command.Command);
 
         /// <summary>
         /// Requests the data and calls the handler
@@ -130,13 +125,11 @@ namespace OBD.NET.Devices
             Logger?.WriteLine("Requesting Type " + typeof(T).Name + " ...", OBDLogLevel.Debug);
             byte pid = ResolvePid<T>();
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
-            var result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
+            CommandResult result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
 
             await result.WaitHandle.WaitAsync();
             return result.Result as T;
         }
-
-        
 
         protected override object ProcessMessage(string message)
         {
@@ -145,21 +138,19 @@ namespace OBD.NET.Devices
             RawDataReceived?.Invoke(this, new RawDataReceivedEventArgs(message, timestamp));
 
             if (message.Length > 4)
-            { 
+            {
                 if (message[0] == '4')
                 {
                     byte mode = (byte)message[1].GetHexVal();
                     if (mode == (byte)Mode)
                     {
                         byte pid = (byte)message.Substring(2, 2).GetHexVal();
-                        Type dataType;
-                        if (DataTypeCache.TryGetValue(pid, out dataType))
+                        if (DataTypeCache.TryGetValue(pid, out Type dataType))
                         {
                             IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
                             obdData.Load(message.Substring(4, message.Length - 4));
-                            
-                            IDataEventManager dataEventManager;
-                            if (_dataReceivedEventHandlers.TryGetValue(dataType, out dataEventManager))
+
+                            if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
                                 dataEventManager.RaiseEvent(this, obdData, timestamp);
 
                             return obdData;
@@ -173,8 +164,7 @@ namespace OBD.NET.Devices
         protected virtual byte ResolvePid<T>()
             where T : class, IOBDData, new()
         {
-            byte pid;
-            if (!PidCache.TryGetValue(typeof(T), out pid))
+            if (!PidCache.TryGetValue(typeof(T), out byte pid))
             {
                 T data = Activator.CreateInstance<T>();
                 pid = data.PID;
@@ -185,40 +175,33 @@ namespace OBD.NET.Devices
             return pid;
         }
 
-        public override void Dispose()
-        {
-            Dispose(true);
-        }
+        public override void Dispose() => Dispose(true);
 
         public void Dispose(bool sendCloseProtocol)
         {
             try
             {
                 if (sendCloseProtocol)
-                {
                     SendCommand(ATCommand.CloseProtocol);
-                }
             }
-            catch { }
+            catch { /* Well at least we tried ... */ }
 
-            _dataReceivedEventHandlers.Clear();
+            DataReceivedEventHandlers.Clear();
 
             base.Dispose();
         }
 
         public void SubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
         {
-            IDataEventManager eventManager;
-            if (!_dataReceivedEventHandlers.TryGetValue(typeof(T), out eventManager))
-                _dataReceivedEventHandlers.Add(typeof(T), (eventManager = new GenericDataEventManager<T>()));
+            if (!DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
+                DataReceivedEventHandlers.Add(typeof(T), (eventManager = new GenericDataEventManager<T>()));
 
             ((GenericDataEventManager<T>)eventManager).DataReceived += eventHandler;
         }
 
         public void UnsubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
         {
-            IDataEventManager eventManager;
-            if (_dataReceivedEventHandlers.TryGetValue(typeof(T), out eventManager))
+            if (DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
                 ((GenericDataEventManager<T>)eventManager).DataReceived -= eventHandler;
         }
 

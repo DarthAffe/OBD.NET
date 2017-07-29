@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.DataTypes
+﻿namespace OBD.NET.Common.DataTypes
 {
     public class Pascal : GenericData
     {
@@ -22,12 +22,9 @@
 
         #region Operators
 
-        public static explicit operator Kilopascal(Pascal pa)
-        {
-            return pa.IsFloatingPointValue
-                ? new Kilopascal(pa.Value * 1000, pa.MinValue * 1000, pa.MaxValue * 1000)
-                : new Kilopascal((int)(pa.Value * 1000), (int)(pa.MinValue * 1000), (int)(pa.MaxValue * 1000));
-        }
+        public static explicit operator Kilopascal(Pascal pa) => pa.IsFloatingPointValue
+                                                                     ? new Kilopascal(pa.Value * 1000, pa.MinValue * 1000, pa.MaxValue * 1000)
+                                                                     : new Kilopascal((int)(pa.Value * 1000), (int)(pa.MinValue * 1000), (int)(pa.MaxValue * 1000));
 
         #endregion
     }

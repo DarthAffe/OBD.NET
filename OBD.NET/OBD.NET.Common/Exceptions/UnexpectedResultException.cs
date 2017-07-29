@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OBD.NET.Exceptions
+namespace OBD.NET.Common.Exceptions
 {
     public class UnexpectedResultException : Exception
     {
@@ -14,7 +14,7 @@ namespace OBD.NET.Exceptions
         #region Constructors
 
         public UnexpectedResultException(string result, string expectedResult)
-            :this($"Unexpected result '{result}'. Expected was '{expectedResult}'", result, expectedResult)
+            : this($"Unexpected result '{result}'. Expected was '{expectedResult}'", result, expectedResult)
         {
             this.Result = result;
             this.ExpectedResult = expectedResult;
@@ -33,7 +33,6 @@ namespace OBD.NET.Exceptions
             this.Result = result;
             this.ExpectedResult = expectedResult;
         }
-        
 
         #endregion
     }

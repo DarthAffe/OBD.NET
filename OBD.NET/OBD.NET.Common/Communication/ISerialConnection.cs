@@ -1,8 +1,8 @@
-﻿using OBD.NET.Common.Communication.EventArgs;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using OBD.NET.Common.Communication.EventArgs;
 
-namespace OBD.NET.Communication
+namespace OBD.NET.Common.Communication
 {
     /// <summary>
     /// Serial connection interface
@@ -42,18 +42,17 @@ namespace OBD.NET.Communication
         /// </summary>
         /// <returns></returns>
         Task ConnectAsync();
-        
+
         /// <summary>
         /// Writes the specified data to the serial connection
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="data">The data.</param>
         void Write(byte[] data);
 
         /// <summary>
         /// Writes the specified data to the serial connection asynchronous
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="data">The data.</param>
         Task WriteAsync(byte[] data);
-
     }
 }

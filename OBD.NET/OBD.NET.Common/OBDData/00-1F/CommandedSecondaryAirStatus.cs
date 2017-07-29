@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OBD.NET.OBDData
+namespace OBD.NET.Common.OBDData
 {
     public class CommandedSecondaryAirStatus : AbstractOBDData
     {

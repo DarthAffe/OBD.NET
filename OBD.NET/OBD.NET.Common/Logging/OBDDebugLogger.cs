@@ -1,17 +1,17 @@
-﻿using OBD.NET.Logging;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace OBD.NET.Common.Logging
 {
     /// <summary>
     /// Simple debug logger
     /// </summary>
-    /// <seealso cref="OBD.NET.Logging.IOBDLogger" />
+    /// <seealso cref="IOBDLogger" />
     public class OBDDebugLogger : IOBDLogger
     {
-        public void WriteLine(string text, OBDLogLevel level)
-        {
-            Debug.WriteLine($"{level}: {text}");
-        }
+        #region Methods
+
+        public void WriteLine(string text, OBDLogLevel level) => Debug.WriteLine($"{level}: {text}");
+
+        #endregion
     }
 }

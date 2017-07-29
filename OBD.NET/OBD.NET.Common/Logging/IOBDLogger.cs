@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.Logging
+﻿namespace OBD.NET.Common.Logging
 {
     public interface IOBDLogger
     {
