@@ -88,7 +88,7 @@ namespace OBD.NET.Common.Devices
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Sends the AT command.
         /// </summary>
@@ -152,6 +152,9 @@ namespace OBD.NET.Common.Devices
 
                             if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
                                 dataEventManager.RaiseEvent(this, obdData, timestamp);
+
+                            if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager genericDataEventManager))
+                                genericDataEventManager.RaiseEvent(this, obdData, timestamp);
 
                             return obdData;
                         }
