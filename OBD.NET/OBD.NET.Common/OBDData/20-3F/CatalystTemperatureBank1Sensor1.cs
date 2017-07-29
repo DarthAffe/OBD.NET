@@ -17,5 +17,11 @@ namespace OBD.NET.Common.OBDData
         { }
 
         #endregion
+
+        #region Methods
+
+        public override string ToString() => Temperature.ToString();
+
+        #endregion
     }
 }

@@ -18,6 +18,12 @@ namespace OBD.NET.Common.OBDData
 
         #endregion
 
+        #region Methods
+
+        public override string ToString() => Status.ToString();
+
+        #endregion
+
         #region Enum
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace OBD.NET.Common.OBDData
                 _rawData = value;
             }
         }
-
+        
         public bool IsValid => RawData.Length == _length;
 
         protected byte A => RawData.Length > 0 ? RawData[0] : default(byte);

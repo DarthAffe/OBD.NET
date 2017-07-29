@@ -44,5 +44,11 @@ namespace OBD.NET.Common.OBDData
         { }
 
         #endregion
+
+        #region Methods
+
+        public override string ToString() => string.Join(",", SupportedPids);
+
+        #endregion
     }
 }

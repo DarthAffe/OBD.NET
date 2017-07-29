@@ -52,5 +52,11 @@
         }
 
         #endregion
+
+        #region Methods
+
+        public override string ToString() => Standard.ToString();
+
+        #endregion
     }
 }

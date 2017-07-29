@@ -20,5 +20,11 @@ namespace OBD.NET.Common.OBDData
         { }
 
         #endregion
+
+        #region Methods
+
+        public override string ToString() => FuelAirEquivalenceRatio.ToString();
+
+        #endregion
     }
 }

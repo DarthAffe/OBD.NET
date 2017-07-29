@@ -16,6 +16,12 @@
 
         #endregion
 
+        #region Methods
+
+        public override string ToString() => Type.ToString();
+
+        #endregion
+
         #region Enum
 
         public enum FuelTypeValue

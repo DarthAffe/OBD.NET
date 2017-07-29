@@ -1,4 +1,6 @@
-﻿namespace OBD.NET.Common.OBDData
+﻿using System;
+
+namespace OBD.NET.Common.OBDData
 {
     public class OxygenSensorPresent : AbstractOBDData
     {
@@ -20,6 +22,12 @@
         public OxygenSensorPresent()
             : base(0x13, 1)
         { }
+
+        #endregion
+
+        #region Methods
+
+        public override string ToString() => Convert.ToString(A, 2);
 
         #endregion
     }
