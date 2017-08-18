@@ -1,8 +1,9 @@
-﻿namespace OBD.NET.Commands
+﻿namespace OBD.NET.Common.Commands
 {
     public class STCommand
     {
         #region Values
+        // ReSharper disable InconsistentNaming
 
         //TODO DarthAffe 19.03.2017: Implement all commands
 
@@ -15,6 +16,7 @@
         internal static readonly STCommand Monitor = new STCommand("STM");
         internal static readonly STCommand MonitorAll = new STCommand("STMA");
 
+        // ReSharper restore InconsistentNaming
         #endregion
 
         #region Properties & Fields
@@ -34,19 +36,13 @@
 
         #region Methods
 
-        public override string ToString()
-        {
-            return Command;
-        }
+        public override string ToString() => Command;
 
         #endregion
 
         #region Operators
 
-        public static implicit operator string(STCommand command)
-        {
-            return command.ToString();
-        }
+        public static implicit operator string(STCommand command) => command.ToString();
 
         #endregion
     }

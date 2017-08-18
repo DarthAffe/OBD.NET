@@ -1,7 +1,7 @@
 ﻿using System;
-using OBD.NET.OBDData;
+using OBD.NET.Common.OBDData;
 
-namespace OBD.NET.Events
+namespace OBD.NET.Common.Events
 {
     public interface IDataEventManager
     {

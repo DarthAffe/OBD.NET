@@ -18,9 +18,10 @@ using System.IO;
 using System.IO.Ports;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 // Source: http://antanas.veiverys.com/mono-serialport-datareceived-event-workaround-using-a-derived-class/
-namespace OBD.NET.Communication
+namespace ODB.NET.Desktop.Communication
 {
     [DesignerCategory("Code")]
     public class EnhancedSerialPort : SerialPort
@@ -31,6 +32,7 @@ namespace OBD.NET.Communication
         private int _fd;
         private FieldInfo _disposedFieldInfo;
         private object _dataReceived;
+        private Thread _thread;
 
         #endregion
 
@@ -85,12 +87,18 @@ namespace OBD.NET.Communication
             if (!IsWindows)
             {
                 FieldInfo fieldInfo = BaseStream.GetType().GetField("fd", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (fieldInfo == null) throw new NotSupportedException("Unable to initialize SerialPort - 'fd'-field is missing.");
                 _fd = (int)fieldInfo.GetValue(BaseStream);
+
                 _disposedFieldInfo = BaseStream.GetType().GetField("disposed", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (_disposedFieldInfo == null) throw new NotSupportedException("Unable to initialize SerialPort - 'disposed'-field is missing.");
+
                 fieldInfo = typeof(SerialPort).GetField("data_received", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (fieldInfo == null) throw new NotSupportedException("Unable to initialize SerialPort - 'data_received'-field is missing.");
                 _dataReceived = fieldInfo.GetValue(this);
 
-                new System.Threading.Thread(EventThreadFunction).Start();
+                _thread = new Thread(EventThreadFunction);
+                _thread.Start();
             }
         }
 

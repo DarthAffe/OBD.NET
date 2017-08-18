@@ -1,17 +1,26 @@
-﻿using OBD.NET.Communication;
-using OBD.NET.Logging;
+﻿using OBD.NET.Common.Commands;
+using OBD.NET.Common.Communication;
+using OBD.NET.Common.Logging;
 
-namespace OBD.NET.Devices
+namespace OBD.NET.Common.Devices
 {
     public class STN1170 : ELM327 // Fully compatible device
     {
-        //TODO DarthAffe 26.06.2016: Add ST-Commands and stuff
-
         #region Constructors
 
         public STN1170(ISerialConnection connection, IOBDLogger logger = null)
             : base(connection, logger)
         { }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Sends the ST command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        public virtual void SendCommand(STCommand command) => SendCommand(command.Command);
 
         #endregion
     }

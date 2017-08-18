@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.OBDData
+﻿namespace OBD.NET.Common.OBDData
 {
     public class OBDStandards : AbstractOBDData
     {

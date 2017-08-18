@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ODB.NET.Desktop</RootNamespace>
     <AssemblyName>ODB.NET.Desktop</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -47,13 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ODB.NET.Desktop.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\OBD.NET.Common\OBD.NET.Common.csproj">
       <Project>{d985b70e-cdf3-4cf1-ab5d-8d19c7fe7b31}</Project>
       <Name>OBD.NET.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ODB.NET.Desktop.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,23 +1,26 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace OBD.NET.Util
+namespace OBD.NET.Common.Util
 {
     /// <summary>
     /// Notifies one or more waiting awaiters that an event has occurred
     /// </summary>
     public class AsyncManualResetEvent
     {
+        #region Properties & Fields
+
         private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Waits the async.
         /// </summary>
         /// <returns></returns>
-        public Task WaitAsync()
-        {
-            return _tcs.Task;
-        }
+        public Task WaitAsync() => _tcs.Task;
 
         //public void Set() { m_tcs.TrySetResult(true); }
         /// <summary>
@@ -25,9 +28,10 @@ namespace OBD.NET.Util
         /// </summary>
         public void Set()
         {
-            var tcs = _tcs;
+            TaskCompletionSource<bool> tcs = _tcs;
             Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s).TrySetResult(true),
-                tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
+                                  tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
+
             tcs.Task.Wait();
         }
 
@@ -38,11 +42,13 @@ namespace OBD.NET.Util
         {
             while (true)
             {
-                var tcs = _tcs;
+                TaskCompletionSource<bool> tcs = _tcs;
                 if (!tcs.Task.IsCompleted ||
-                    Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+                    (Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs))
                     return;
             }
         }
+
+        #endregion
     }
 }

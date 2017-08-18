@@ -1,8 +1,9 @@
-﻿namespace OBD.NET.Commands
+﻿namespace OBD.NET.Common.Commands
 {
     public class ATCommand
     {
-        #region Values
+        #region Commands
+        // ReSharper disable InconsistentNaming
 
         //TODO DarthAffe 26.06.2016: Implement all commands
 
@@ -21,6 +22,7 @@
         public static readonly ATCommand PrintVersion = new ATCommand("ATI", "^ELM327.*");
         public static readonly ATCommand CloseProtocol = new ATCommand("ATPC");
 
+        // ReSharper restore InconsistentNaming
         #endregion
 
         #region Properties & Fields
@@ -42,19 +44,13 @@
 
         #region Methods
 
-        public override string ToString()
-        {
-            return Command;
-        }
+        public override string ToString() => Command;
 
         #endregion
 
         #region Operators
 
-        public static implicit operator string(ATCommand command)
-        {
-            return command.ToString();
-        }
+        public static implicit operator string(ATCommand command) => command.ToString();
 
         #endregion
     }

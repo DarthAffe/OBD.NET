@@ -1,6 +1,6 @@
-﻿using OBD.NET.DataTypes;
+﻿using OBD.NET.Common.DataTypes;
 
-namespace OBD.NET.OBDData
+namespace OBD.NET.Common.OBDData
 {
     public class CatalystTemperatureBank1Sensor2 : AbstractOBDData
     {

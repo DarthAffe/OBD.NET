@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.DataTypes
+﻿namespace OBD.NET.Common.DataTypes
 {
     public class Count : GenericData
     {

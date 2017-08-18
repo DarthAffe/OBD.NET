@@ -1,58 +1,36 @@
 ﻿using System;
-using OBD.NET.Communication;
-using OBD.NET.Exceptions;
-using OBD.NET.Logging;
-using System.Threading.Tasks;
-using OBD.NET.Common.Communication.EventArgs;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
-using System.Collections.Concurrent;
-using OBD.NET.Common.Devices;
+using System.Threading.Tasks;
+using OBD.NET.Common.Communication;
+using OBD.NET.Common.Communication.EventArgs;
+using OBD.NET.Common.Exceptions;
+using OBD.NET.Common.Logging;
 
-namespace OBD.NET.Devices
-{ 
+namespace OBD.NET.Common.Devices
+{
     /// <summary>
     /// Base class used for communicating with the device
     /// </summary>
     public abstract class SerialDevice : IDisposable
     {
-        private BlockingCollection<QueuedCommand> commandQueue;
+        #region Properties & Fields
 
+        private readonly BlockingCollection<QueuedCommand> _commandQueue = new BlockingCollection<QueuedCommand>();
         private readonly StringBuilder _lineBuffer = new StringBuilder();
+        private readonly AutoResetEvent _commandFinishedEvent = new AutoResetEvent(false);
+        private Task _commandWorkerTask;
+        private CancellationTokenSource _commandCancellationToken;
 
-        private readonly AutoResetEvent commandFinishedEvent = new AutoResetEvent(false);
-
-        private Task commandWorkerTask;
-
-        private CancellationTokenSource commandCancellationToken;
-
-        protected QueuedCommand currentCommand;
-        
-        /// <summary>
-        /// Logger instance
-        /// </summary>
+        protected QueuedCommand CurrentCommand;
         protected IOBDLogger Logger { get; }
-
-        /// <summary>
-        /// Low level connection
-        /// </summary>
         protected ISerialConnection Connection { get; }
-
-        /// <summary>
-        /// Terminator of the protocol message
-        /// </summary>
         protected char Terminator { get; set; }
 
+        #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Prevents a default instance of the <see cref="SerialDevice"/> class from being created.
-        /// </summary>
-        private SerialDevice()
-        {
-            commandQueue = new BlockingCollection<QueuedCommand>();
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerialDevice"/> class.
@@ -61,21 +39,18 @@ namespace OBD.NET.Devices
         /// <param name="terminator">terminator used for terminating the command message</param>
         /// <param name="logger">logger instance</param>
         protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
-            :this()
         {
-            Connection = connection;
-            Terminator = terminator;
-            Logger = logger;
+            this.Connection = connection;
+            this.Terminator = terminator;
+            this.Logger = logger;
 
             connection.DataReceived += OnDataReceived;
         }
 
-
         #endregion
-        
+
         #region Methods
 
-        
         /// <summary>
         /// Initializes the device
         /// </summary>
@@ -105,13 +80,11 @@ namespace OBD.NET.Devices
                 Logger?.WriteLine("Failed to open Serial-Connection.", OBDLogLevel.Error);
                 throw new SerialException("Failed to open Serial-Connection.");
             }
-            else
-            { 
-                Logger?.WriteLine("Opened Serial-Connection!", OBDLogLevel.Debug);
-            }
 
-            commandCancellationToken = new CancellationTokenSource();
-            commandWorkerTask = Task.Factory.StartNew(CommandWorker);
+            Logger?.WriteLine("Opened Serial-Connection!", OBDLogLevel.Debug);
+
+            _commandCancellationToken = new CancellationTokenSource();
+            _commandWorkerTask = Task.Factory.StartNew(CommandWorker);
         }
 
 
@@ -123,19 +96,17 @@ namespace OBD.NET.Devices
         protected virtual CommandResult SendCommand(string command)
         {
             if (!Connection.IsOpen)
-            {
                 throw new InvalidOperationException("Not connected");
-            }
 
-            
             command = PrepareCommand(command);
             Logger?.WriteLine("Queuing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-            var cmd = new QueuedCommand(command);
-            commandQueue.Add(cmd);
+            QueuedCommand cmd = new QueuedCommand(command);
+            _commandQueue.Add(cmd);
+
             return cmd.CommandResult;
         }
-        
+
         /// <summary>
         /// Prepares the command
         /// </summary>
@@ -168,8 +139,8 @@ namespace OBD.NET.Devices
                         break;
 
                     case '>':
-                        currentCommand.CommandResult.WaitHandle.Set();
-                        commandFinishedEvent.Set();
+                        CurrentCommand.CommandResult.WaitHandle.Set();
+                        _commandFinishedEvent.Set();
                         break;
 
                     case '\n':
@@ -203,8 +174,8 @@ namespace OBD.NET.Devices
         /// <param name="message">The message.</param>
         private void InternalProcessMessage(string message)
         {
-            var data = ProcessMessage(message);
-            currentCommand.CommandResult.Result = data;
+            object data = ProcessMessage(message);
+            CurrentCommand.CommandResult.Result = data;
         }
 
         /// <summary>
@@ -219,7 +190,7 @@ namespace OBD.NET.Devices
         /// </summary>
         private async void CommandWorker()
         {
-            while (!commandCancellationToken.IsCancellationRequested)
+            while (!_commandCancellationToken.IsCancellationRequested)
             {
                 currentCommand = null;
                 try
@@ -229,14 +200,9 @@ namespace OBD.NET.Devices
                         Logger?.WriteLine("Writing Command: '" + currentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
                         if (Connection.IsAsync)
-                        {
                             await Connection.WriteAsync(Encoding.ASCII.GetBytes(currentCommand.CommandText));
-                        }
                         else
-                        {
                             Connection.Write(Encoding.ASCII.GetBytes(currentCommand.CommandText));
-
-                        }
                         //wait for command to finish
                         commandFinishedEvent.WaitOne();
                     }

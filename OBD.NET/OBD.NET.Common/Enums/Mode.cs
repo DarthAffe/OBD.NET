@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.Enums
+﻿namespace OBD.NET.Common.Enums
 {
     /// <summary>
     /// https://en.wikipedia.org/wiki/OBD-II_PIDs#Modes

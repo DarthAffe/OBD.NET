@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.DataTypes
+﻿namespace OBD.NET.Common.DataTypes
 {
     public class Second : GenericData
     {
@@ -22,10 +22,7 @@
 
         #region Operators
 
-        public static explicit operator Minute(Second s)
-        {
-            return new Minute(s.Value / 60.0, s.MinValue / 60.0, s.MaxValue / 60.0);
-        }
+        public static explicit operator Minute(Second s) => new Minute(s.Value / 60.0, s.MinValue / 60.0, s.MaxValue / 60.0);
 
         #endregion
     }

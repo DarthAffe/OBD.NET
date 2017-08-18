@@ -1,10 +1,10 @@
-﻿namespace OBD.NET.OBDData
+﻿namespace OBD.NET.Common.OBDData
 {
     public class AuxiliaryInputStatus : AbstractOBDData
     {
         #region Properties & Fields
 
-        public bool PowerTakeOffStatus => (A & 1 << 0) != 0;
+        public bool PowerTakeOffStatus => (A & (1 << 0)) != 0;
 
         #endregion
 

@@ -1,44 +1,32 @@
-﻿using OBD.NET.Common.Logging;
-using OBD.NET.Communication;
-using OBD.NET.Devices;
-using OBD.NET.Logging;
-using OBD.NET.OBDData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using OBD.NET.Common.Devices;
+using OBD.NET.Common.Logging;
+using OBD.NET.Common.OBDData;
+using ODB.NET.Desktop.Communication;
+using ODB.NET.Desktop.Logging;
 
 namespace ODB.NET.ConsoleClient
 {
-    /// <summary>
-    /// Console test client
-    /// </summary>
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Length < 1)
             {
                 Console.WriteLine("Parameter ComPort needed.");
                 return;
             }
-            
-            var comPort = args[0];
+
+            string comPort = args[0];
 
             using (SerialConnection connection = new SerialConnection(comPort))
             using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
             {
-                dev.SubscribeDataReceived<EngineRPM>((sender, data) =>
-                {
-                    Console.WriteLine("EngineRPM: " + data.Data.Rpm);
-                });
+                dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
 
-                dev.SubscribeDataReceived<VehicleSpeed>((sender, data) =>
-                {
-                    Console.WriteLine("VehicleSpeed: " + data.Data.Speed);
-                });
+                dev.SubscribeDataReceived<VehicleSpeed>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data.Speed));
 
                 dev.Initialize();
                 dev.RequestData<FuelType>();
@@ -48,12 +36,13 @@ namespace ODB.NET.ConsoleClient
                     dev.RequestData<VehicleSpeed>();
                     Thread.Sleep(1000);
                 }
-                Console.ReadLine();
             }
+            Console.ReadLine();
 
             //Async example
             MainAsync(comPort).Wait();
-            
+
+            Console.ReadLine();
         }
 
         /// <summary>
@@ -67,18 +56,15 @@ namespace ODB.NET.ConsoleClient
             using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
             {
                 dev.Initialize();
-                var data = await dev.RequestDataAsync<EngineRPM>();
+                EngineRPM data = await dev.RequestDataAsync<EngineRPM>();
                 Console.WriteLine("Data: " + data.Rpm);
                 data = await dev.RequestDataAsync<EngineRPM>();
                 Console.WriteLine("Data: " + data.Rpm);
-                var data2 = await dev.RequestDataAsync<VehicleSpeed>();
+                VehicleSpeed data2 = await dev.RequestDataAsync<VehicleSpeed>();
                 Console.WriteLine("Data: " + data2.Speed);
                 data = await dev.RequestDataAsync<EngineRPM>();
                 Console.WriteLine("Data: " + data.Rpm);
-
             }
         }
     }
-
-    
 }

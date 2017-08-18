@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OBD.NET.Common.Devices
+﻿namespace OBD.NET.Common.Devices
 {
     /// <summary>
     /// Class used for queued command
     /// </summary>
     public class QueuedCommand
     {
+        #region Properties & Fields
 
-        /// <summary>
-        /// Initializes a new instance
-        /// </summary>
-        /// <param name="commandText"></param>
-        public QueuedCommand(string commandText)
-        {
-            CommandResult = new CommandResult();
-            CommandText = commandText;
-        }
-
-        public string CommandText { get; set; }
+        public string CommandText { get; private set; }
 
         public CommandResult CommandResult { get; }
+
+        #endregion
+
+        #region Constructors
+
+        public QueuedCommand(string commandText)
+        {
+            this.CommandText = commandText;
+
+            CommandResult = new CommandResult();
+        }
+
+        #endregion
     }
 }
