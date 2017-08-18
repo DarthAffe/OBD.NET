@@ -192,19 +192,23 @@ namespace OBD.NET.Common.Devices
         {
             while (!_commandCancellationToken.IsCancellationRequested)
             {
-                CurrentCommand = null;
-                if (_commandQueue.TryTake(out CurrentCommand, Timeout.Infinite, _commandCancellationToken.Token))
+                currentCommand = null;
+                try
                 {
-                    Logger?.WriteLine("Writing Command: '" + CurrentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
+                    if (commandQueue.TryTake(out currentCommand, Timeout.Infinite, commandCancellationToken.Token))
+                    {
+                        Logger?.WriteLine("Writing Command: '" + currentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-                    if (Connection.IsAsync)
-                        await Connection.WriteAsync(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
-                    else
-                        Connection.Write(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
-
-                    //wait for command to finish
-                    _commandFinishedEvent.WaitOne();
+                        if (Connection.IsAsync)
+                            await Connection.WriteAsync(Encoding.ASCII.GetBytes(currentCommand.CommandText));
+                        else
+                            Connection.Write(Encoding.ASCII.GetBytes(currentCommand.CommandText));
+                        //wait for command to finish
+                        commandFinishedEvent.WaitOne();
+                    }
                 }
+                catch (OperationCanceledException)
+                {/*ignore, because it is thrown when the cancellation token is canceled*/}
             }
         }
 
@@ -213,9 +217,9 @@ namespace OBD.NET.Common.Devices
         /// </summary>
         public virtual void Dispose()
         {
-            _commandCancellationToken?.Cancel();
-            _commandWorkerTask?.Wait();
-
+            commandQueue.CompleteAdding();
+            commandCancellationToken?.Cancel();
+            commandWorkerTask?.Wait();
             Connection?.Dispose();
         }
 
