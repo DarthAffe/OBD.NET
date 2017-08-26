@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using OBD.NET.Common.Commands;
 using OBD.NET.Common.Communication;
@@ -80,6 +82,7 @@ namespace OBD.NET.Common.Devices
                 Logger?.WriteLine("Setting the Protocol to 'Auto' ...", OBDLogLevel.Debug);
                 SendCommand(ATCommand.SetProtocolAuto);
 
+                WaitQueue();
             }
             // DarthAffe 21.02.2017: This seems to happen sometimes, i don't know why - just retry.
             catch
@@ -108,7 +111,11 @@ namespace OBD.NET.Common.Devices
             RequestData(pid);
         }
 
-        protected virtual void RequestData(byte pid)
+        /// <summary>
+        /// Request data based on a pid
+        /// </summary>
+        /// <param name="pid">The pid of the requested data</param>
+        public virtual void RequestData(byte pid)
         {
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
             SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
@@ -124,11 +131,20 @@ namespace OBD.NET.Common.Devices
         {
             Logger?.WriteLine("Requesting Type " + typeof(T).Name + " ...", OBDLogLevel.Debug);
             byte pid = ResolvePid<T>();
+            return await RequestDataAsync(pid) as T;
+        }
+
+        /// <summary>
+        /// Request data based on a pid
+        /// </summary>
+        /// <param name="pid">The pid of the requested data</param>
+        public virtual async Task<object> RequestDataAsync(byte pid)
+        {
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
             CommandResult result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
 
             await result.WaitHandle.WaitAsync();
-            return result.Result as T;
+            return result.Result;
         }
 
         protected override object ProcessMessage(string message)
@@ -168,14 +184,40 @@ namespace OBD.NET.Common.Devices
             where T : class, IOBDData, new()
         {
             if (!PidCache.TryGetValue(typeof(T), out byte pid))
-            {
-                T data = Activator.CreateInstance<T>();
-                pid = data.PID;
-                PidCache.Add(typeof(T), pid);
-                DataTypeCache.Add(pid, typeof(T));
-            }
+                pid = AddToPidCache<T>();
 
             return pid;
+        }
+
+        public virtual byte AddToPidCache<T>()
+            where T : class, IOBDData, new() => AddToPidCache(typeof(T));
+
+        protected virtual byte AddToPidCache(Type obdDataType)
+        {
+            IOBDData data = (IOBDData)Activator.CreateInstance(obdDataType);
+            if (data == null) throw new ArgumentException("Has to implement IOBDData", nameof(obdDataType));
+
+            byte pid = data.PID;
+
+            PidCache.Add(obdDataType, pid);
+            DataTypeCache.Add(pid, obdDataType);
+
+            return pid;
+        }
+
+        /// <summary>
+        /// YOU SHOULDN'T NEED THIS METHOD!
+        /// 
+        /// You should only use this method if you're requesting data by pid instead of the <see cref="RequestData{T}"/>-method.
+        /// 
+        /// Initializes the PID-Cache with all IOBDData-Types contained in OBD.NET.
+        /// You can add additional ones with <see cref="AddToPidCache{T}"/>.
+        /// </summary>
+        public virtual void InitializePidCache()
+        {
+            TypeInfo iobdDataInfo = typeof(IOBDData).GetTypeInfo();
+            foreach (TypeInfo obdDataType in iobdDataInfo.Assembly.DefinedTypes.Where(t => t.IsClass && !t.IsAbstract && iobdDataInfo.IsAssignableFrom(t)))
+                AddToPidCache(obdDataType.AsType());
         }
 
         public override void Dispose() => Dispose(true);

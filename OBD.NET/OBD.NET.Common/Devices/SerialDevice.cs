@@ -23,6 +23,11 @@ namespace OBD.NET.Common.Devices
         private Task _commandWorkerTask;
         private CancellationTokenSource _commandCancellationToken;
 
+        private volatile int _queueSize = 0;
+        private readonly ManualResetEvent _queueEmptyEvent = new ManualResetEvent(true);
+
+        public int QueueSize => _queueSize;
+
         protected QueuedCommand CurrentCommand;
         protected IOBDLogger Logger { get; }
         protected ISerialConnection Connection { get; }
@@ -102,6 +107,8 @@ namespace OBD.NET.Common.Devices
             Logger?.WriteLine("Queuing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
             QueuedCommand cmd = new QueuedCommand(command);
+            _queueEmptyEvent.Reset();
+            _queueSize++;
             _commandQueue.Add(cmd);
 
             return cmd.CommandResult;
@@ -193,8 +200,14 @@ namespace OBD.NET.Common.Devices
             while (!_commandCancellationToken.IsCancellationRequested)
             {
                 CurrentCommand = null;
-                if (_commandQueue.TryTake(out CurrentCommand, Timeout.Infinite, _commandCancellationToken.Token))
+
+                if (_queueSize == 0)
+                    _queueEmptyEvent.Set();
+
+                if (_commandQueue.TryTake(out CurrentCommand, 10, _commandCancellationToken.Token))
                 {
+                    _queueSize--;
+
                     Logger?.WriteLine("Writing Command: '" + CurrentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
                     if (Connection.IsAsync)
@@ -207,6 +220,10 @@ namespace OBD.NET.Common.Devices
                 }
             }
         }
+
+        public void WaitQueue() => _queueEmptyEvent.WaitOne();
+
+        public async Task WaitQueueAsync() => await Task.Run(() => WaitQueue());
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

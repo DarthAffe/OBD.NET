@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using OBD.NET.Common.Devices;
+using OBD.NET.Common.Extensions;
 using OBD.NET.Common.Logging;
 using OBD.NET.Common.OBDData;
 using ODB.NET.Desktop.Communication;
@@ -25,8 +26,9 @@ namespace ODB.NET.ConsoleClient
             using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
             {
                 dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
-
                 dev.SubscribeDataReceived<VehicleSpeed>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data.Speed));
+
+                dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
                 dev.Initialize();
                 dev.RequestData<FuelType>();
@@ -40,9 +42,9 @@ namespace ODB.NET.ConsoleClient
             Console.ReadLine();
 
             //Async example
-            MainAsync(comPort).Wait();
+            //MainAsync(comPort).Wait();
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         /// <summary>

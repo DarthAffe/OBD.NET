@@ -30,7 +30,7 @@ namespace ODB.NET.Desktop.Logging
         {
             if (LogLevel == OBDLogLevel.None) return;
 
-            if ((int)level >= (int)LogLevel)
+            if ((int)level <= (int)LogLevel)
                 Console.WriteLine($"{DateTime.Now:G} -  {level} -  {text}");
         }
 
