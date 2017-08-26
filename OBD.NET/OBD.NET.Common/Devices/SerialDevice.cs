@@ -204,20 +204,24 @@ namespace OBD.NET.Common.Devices
                 if (_queueSize == 0)
                     _queueEmptyEvent.Set();
 
-                if (_commandQueue.TryTake(out CurrentCommand, 10, _commandCancellationToken.Token))
+                try
                 {
-                    _queueSize--;
+                    if (_commandQueue.TryTake(out CurrentCommand, 10, _commandCancellationToken.Token))
+                    {
+                        _queueSize--;
 
-                    Logger?.WriteLine("Writing Command: '" + CurrentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
+                        Logger?.WriteLine("Writing Command: '" + CurrentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-                    if (Connection.IsAsync)
-                        await Connection.WriteAsync(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
-                    else
-                        Connection.Write(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
+                        if (Connection.IsAsync)
+                            await Connection.WriteAsync(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
+                        else
+                            Connection.Write(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
 
-                    //wait for command to finish
-                    _commandFinishedEvent.WaitOne();
+                        //wait for command to finish
+                        _commandFinishedEvent.WaitOne();
+                    }
                 }
+                catch (OperationCanceledException) { /*ignore, because it is thrown when the cancellation token is canceled*/}
             }
         }
 
@@ -230,9 +234,9 @@ namespace OBD.NET.Common.Devices
         /// </summary>
         public virtual void Dispose()
         {
+            _commandQueue.CompleteAdding();
             _commandCancellationToken?.Cancel();
             _commandWorkerTask?.Wait();
-
             Connection?.Dispose();
         }
 
