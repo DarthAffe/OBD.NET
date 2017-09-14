@@ -183,6 +183,7 @@ namespace OBD.NET.Common.Devices
         {
             object data = ProcessMessage(message);
             CurrentCommand.CommandResult.Result = data;
+            CurrentCommand.CommandResult.RawResult = message;
         }
 
         /// <summary>

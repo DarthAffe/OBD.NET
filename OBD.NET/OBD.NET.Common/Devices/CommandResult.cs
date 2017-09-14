@@ -7,6 +7,7 @@ namespace OBD.NET.Common.Devices
         #region Properties & Fields
 
         public object Result { get; set; }
+        public string RawResult { get; set; }
         public AsyncManualResetEvent WaitHandle { get; }
 
         #endregion

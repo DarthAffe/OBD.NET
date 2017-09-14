@@ -11,6 +11,7 @@ using OBD.NET.Common.Events.EventArgs;
 using OBD.NET.Common.Extensions;
 using OBD.NET.Common.Logging;
 using OBD.NET.Common.OBDData;
+using OBD.NET.Common.OBDData.DTC;
 
 namespace OBD.NET.Common.Devices
 {
@@ -147,33 +148,63 @@ namespace OBD.NET.Common.Devices
             return result.Result;
         }
 
+        public virtual TroubleCode[] RequestDTCs() => RequestDTCsAsync().Result;
+
+        public virtual async Task<TroubleCode[]> RequestDTCsAsync()
+        {
+            Logger?.WriteLine("Requesting DTCs ...", OBDLogLevel.Debug);
+            MonitorStatusSinceDTCsClreared dtcStatus = await RequestDataAsync<MonitorStatusSinceDTCsClreared>();
+
+            CommandResult result = SendCommand(((int)Mode.ShowStoredDiagnosticTroubleCodes).ToString());
+            await result.WaitHandle.WaitAsync();
+
+            if (!(result.Result is List<TroubleCode> resultCodes)) return new TroubleCode[0];
+
+            int count = Math.Min(dtcStatus.DTCCount, resultCodes.Count);
+            return resultCodes.Take(count).ToArray();
+        }
+
         protected override object ProcessMessage(string message)
         {
             DateTime timestamp = DateTime.Now;
 
             RawDataReceived?.Invoke(this, new RawDataReceivedEventArgs(message, timestamp));
 
-            if (message.Length > 4)
+            if (message.Length >= 4)
             {
                 if (message[0] == '4')
                 {
                     byte mode = (byte)message[1].GetHexVal();
-                    if (mode == (byte)Mode)
+                    switch ((Mode)mode)
                     {
-                        byte pid = (byte)message.Substring(2, 2).GetHexVal();
-                        if (DataTypeCache.TryGetValue(pid, out Type dataType))
-                        {
-                            IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
-                            obdData.Load(message.Substring(4, message.Length - 4));
+                        case Mode.ShowCurrentData:
+                            byte pid = (byte)message.Substring(2, 2).GetHexVal();
+                            if (DataTypeCache.TryGetValue(pid, out Type dataType))
+                            {
+                                IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
+                                obdData.Load(message.Substring(4));
 
-                            if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
-                                dataEventManager.RaiseEvent(this, obdData, timestamp);
+                                if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
+                                    dataEventManager.RaiseEvent(this, obdData, timestamp);
 
-                            if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager genericDataEventManager))
-                                genericDataEventManager.RaiseEvent(this, obdData, timestamp);
+                                if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager genericDataEventManager))
+                                    genericDataEventManager.RaiseEvent(this, obdData, timestamp);
 
-                            return obdData;
-                        }
+                                return obdData;
+                            }
+                            break;
+
+                        case Mode.ShowStoredDiagnosticTroubleCodes:
+                            //TODO DarthAffe 14.09.2017: I think multiple frames (as stated in the documentation for dtcs) aren't supported right now - how to handle them?
+                            List<TroubleCode> troubleCodes = new List<TroubleCode>();
+                            for (int i = 2; (i + 3) < message.Length; i += 4)
+                            {
+                                string dtc = message.Substring(i, 4);
+                                TroubleCode troubleCode = new TroubleCode();
+                                troubleCode.Load(dtc);
+                                troubleCodes.Add(troubleCode);
+                            }
+                            return troubleCodes;
                     }
                 }
             }
