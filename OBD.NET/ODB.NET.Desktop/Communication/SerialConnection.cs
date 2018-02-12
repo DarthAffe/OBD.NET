@@ -63,9 +63,15 @@ namespace ODB.NET.Desktop.Communication
 
         public void Dispose() => _serialPort?.Dispose();
 
-        public Task ConnectAsync() => throw new NotSupportedException("Asynchronous operations not supported");
+        public Task ConnectAsync()
+        {
+            throw new NotSupportedException("Asynchronous operations not supported");
+        }
 
-        public Task WriteAsync(byte[] data) => throw new NotSupportedException("Asynchronous operations not supported");
+        public Task WriteAsync(byte[] data)
+        {
+            throw new NotSupportedException("Asynchronous operations not supported");
+        }
 
         public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
 

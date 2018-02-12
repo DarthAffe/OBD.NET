@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OBD.NET.Common", "OBD.NET.Common\OBD.NET.Common.csproj", "{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODB.NET.Desktop", "ODB.NET.Desktop\ODB.NET.Desktop.csproj", "{14CB98E1-95DE-4923-8896-FDF5171AA49E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBD.NET.Universal", "OBD.NET.Universal\OBD.NET.Universal.csproj", "{E0EAFF82-C514-4827-8F49-F1928EBA8E73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODB.NET.ConsoleClient", "ODB.NET.ConsoleClient\ODB.NET.ConsoleClient.csproj", "{8F8EC5D5-94BD-47CF-9714-CA8C0198BDDC}"
 EndProject
@@ -55,22 +53,6 @@ Global
 		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Release|x64.Build.0 = Release|Any CPU
 		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Release|x86.ActiveCfg = Release|Any CPU
 		{14CB98E1-95DE-4923-8896-FDF5171AA49E}.Release|x86.Build.0 = Release|Any CPU
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|ARM.ActiveCfg = Debug|ARM
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|ARM.Build.0 = Debug|ARM
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|x64.ActiveCfg = Debug|x64
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|x64.Build.0 = Debug|x64
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|x86.ActiveCfg = Debug|x86
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Debug|x86.Build.0 = Debug|x86
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|ARM.ActiveCfg = Release|ARM
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|ARM.Build.0 = Release|ARM
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|x64.ActiveCfg = Release|x64
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|x64.Build.0 = Release|x64
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|x86.ActiveCfg = Release|x86
-		{E0EAFF82-C514-4827-8F49-F1928EBA8E73}.Release|x86.Build.0 = Release|x86
 		{8F8EC5D5-94BD-47CF-9714-CA8C0198BDDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F8EC5D5-94BD-47CF-9714-CA8C0198BDDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F8EC5D5-94BD-47CF-9714-CA8C0198BDDC}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -90,5 +72,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B1EAB3A-F27B-451F-B23C-48D12E10AD80}
 	EndGlobalSection
 EndGlobal

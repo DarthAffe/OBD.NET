@@ -158,7 +158,8 @@ namespace OBD.NET.Common.Devices
             CommandResult result = SendCommand(((int)Mode.ShowStoredDiagnosticTroubleCodes).ToString());
             await result.WaitHandle.WaitAsync();
 
-            if (!(result.Result is List<TroubleCode> resultCodes)) return new TroubleCode[0];
+            List<TroubleCode> resultCodes = result.Result as List<TroubleCode>;
+            if (resultCodes == null) return new TroubleCode[0];
 
             int count = Math.Min(dtcStatus.DTCCount, resultCodes.Count);
             return resultCodes.Take(count).ToArray();
@@ -179,15 +180,18 @@ namespace OBD.NET.Common.Devices
                     {
                         case Mode.ShowCurrentData:
                             byte pid = (byte)message.Substring(2, 2).GetHexVal();
-                            if (DataTypeCache.TryGetValue(pid, out Type dataType))
+                            Type dataType;
+                            if (DataTypeCache.TryGetValue(pid, out dataType))
                             {
                                 IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
                                 obdData.Load(message.Substring(4));
 
-                                if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
+                                IDataEventManager dataEventManager;
+                                if (DataReceivedEventHandlers.TryGetValue(dataType, out dataEventManager))
                                     dataEventManager.RaiseEvent(this, obdData, timestamp);
 
-                                if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager genericDataEventManager))
+                                IDataEventManager genericDataEventManager;
+                                if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out genericDataEventManager))
                                     genericDataEventManager.RaiseEvent(this, obdData, timestamp);
 
                                 return obdData;
@@ -214,7 +218,8 @@ namespace OBD.NET.Common.Devices
         protected virtual byte ResolvePid<T>()
             where T : class, IOBDData, new()
         {
-            if (!PidCache.TryGetValue(typeof(T), out byte pid))
+            byte pid;
+            if (!PidCache.TryGetValue(typeof(T), out pid))
                 pid = AddToPidCache<T>();
 
             return pid;
@@ -269,7 +274,8 @@ namespace OBD.NET.Common.Devices
 
         public void SubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
         {
-            if (!DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
+            IDataEventManager eventManager;
+            if (!DataReceivedEventHandlers.TryGetValue(typeof(T), out eventManager))
                 DataReceivedEventHandlers.Add(typeof(T), (eventManager = new GenericDataEventManager<T>()));
 
             ((GenericDataEventManager<T>)eventManager).DataReceived += eventHandler;
@@ -277,7 +283,8 @@ namespace OBD.NET.Common.Devices
 
         public void UnsubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
         {
-            if (DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
+            IDataEventManager eventManager;
+            if (DataReceivedEventHandlers.TryGetValue(typeof(T), out eventManager))
                 ((GenericDataEventManager<T>)eventManager).DataReceived -= eventHandler;
         }
 

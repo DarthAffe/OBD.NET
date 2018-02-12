@@ -10,7 +10,6 @@ namespace OBD.NET.Common.OBDData.DTC
 
         private static readonly Dictionary<TroublePart, string> PART_DESCRIPTION = new Dictionary<TroublePart, string>
         {
-
             { TroublePart.Powertrain, "P" },
             { TroublePart.Chassis, "C" },
             { TroublePart.Body, "B" },
@@ -21,16 +20,16 @@ namespace OBD.NET.Common.OBDData.DTC
         {
             get
             {
-                byte data = (byte)(A & 0b11000000);
+                byte data = (byte)(A & 0xC0);
                 switch (data)
                 {
                     case 0:
                         return TroublePart.Powertrain;
-                    case 0b01000000:
+                    case 0x40:
                         return TroublePart.Chassis;
-                    case 0b10000000:
+                    case 0x80:
                         return TroublePart.Body;
-                    case 0b11000000:
+                    case 0xC0:
                         return TroublePart.Network;
                     default:
                         throw new IndexOutOfRangeException($"Can't parse TroublePart with data {data}");
@@ -42,16 +41,16 @@ namespace OBD.NET.Common.OBDData.DTC
         {
             get
             {
-                byte data = (byte)(A & 0b00110000);
+                byte data = (byte)(A & 0x30);
                 switch (data)
                 {
-                    case 0:
+                    case 0x0:
                         return Definition.SAEJ2012;
-                    case 0b01000000:
+                    case 0x40:
                         return Definition.Custom;
-                    case 0b10000000:
+                    case 0x80:
                         return Definition.Undefined;
-                    case 0b11000000:
+                    case 0xC0:
                         return Definition.Undefined2;
                     default:
                         throw new IndexOutOfRangeException($"Can't parse Definition with data {data}");
@@ -59,7 +58,7 @@ namespace OBD.NET.Common.OBDData.DTC
             }
         }
 
-        public SpecificPart SpecificPart => (SpecificPart)(A & 0b00001111);
+        public SpecificPart SpecificPart => (SpecificPart)(A & 0xF);
 
         public string FaultCode => B.ToHexString();
 
