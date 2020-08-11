@@ -19,5 +19,11 @@
         { }
 
         #endregion
+
+        #region Methods
+
+        public override string ToString() => (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + (Unit ?? string.Empty);
+
+        #endregion
     }
 }
