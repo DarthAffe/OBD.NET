@@ -135,6 +135,18 @@ namespace OBD.NET.Common.Devices
         }
 
         /// <summary>
+        /// Requests the data asynchronous and return the data when available
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<IOBDData> RequestDataAsync(Type type)
+        {
+            Logger?.WriteLine("Requesting Type " + type.Name + " ...", OBDLogLevel.Debug);
+            byte pid = ResolvePid(type);
+            return await RequestDataAsync(pid) as IOBDData;
+        }
+
+        /// <summary>
         /// Request data based on a pid
         /// </summary>
         /// <param name="pid">The pid of the requested data</param>
@@ -182,9 +194,12 @@ namespace OBD.NET.Common.Devices
 
         protected virtual byte ResolvePid<T>()
             where T : class, IOBDData, new()
+            => ResolvePid(typeof(T));
+
+        protected virtual byte ResolvePid(Type type)
         {
-            if (!PidCache.TryGetValue(typeof(T), out byte pid))
-                pid = AddToPidCache<T>();
+            if (!PidCache.TryGetValue(type, out byte pid))
+                pid = AddToPidCache(type);
 
             return pid;
         }
