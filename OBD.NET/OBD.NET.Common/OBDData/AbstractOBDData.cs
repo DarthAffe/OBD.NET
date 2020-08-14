@@ -22,7 +22,7 @@ namespace OBD.NET.Common.OBDData
                 _rawData = value;
             }
         }
-        
+
         public bool IsValid => RawData.Length == _length;
 
         protected byte A => RawData.Length > 0 ? RawData[0] : default(byte);
@@ -55,7 +55,7 @@ namespace OBD.NET.Common.OBDData
         {
             try
             {
-                if (((data.Length % 2) == 1) || ((data.Length / 2) != _length))
+                if (((data.Length % 2) != 0) || ((data.Length / 2) < _length))
                     throw new ArgumentException("The provided data is not valid", nameof(data));
 
                 _rawData = new byte[_length];

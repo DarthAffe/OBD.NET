@@ -25,6 +25,8 @@ namespace OBD.NET.Common.Devices
 
         protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
 
+        protected string MessageChunk { get; set; }
+
         #endregion
 
         #region Events 
@@ -161,13 +163,29 @@ namespace OBD.NET.Common.Devices
 
         protected override object ProcessMessage(string message)
         {
+            if (message == null) return null;
+
             DateTime timestamp = DateTime.Now;
 
             RawDataReceived?.Invoke(this, new RawDataReceivedEventArgs(message, timestamp));
 
             if (message.Length > 4)
             {
-                if (message[0] == '4')
+                // DarthAffe 15.08.2020: Splitted messages are prefixed with 0: (first chunk) and 1: (second chunk)
+                // DarthAffe 15.08.2020: They also seem to be always preceded by a '009'-message, but since that's to short to be processed it should be safe to ignore.
+                // DarthAffe 15.08.2020: Since that behavior isn't really documented (at least I wasn't able to find it) that's all trial and error and might not work for all pids with long results.
+                if (message[1] == ':')
+                {
+                    if (message[0] == '0')
+                        MessageChunk = message.Substring(2, message.Length - 2);
+                    else if (message[0] == '1')
+                    {
+                        string fullMessage = MessageChunk + message.Substring(2, message.Length - 2);
+                        MessageChunk = null;
+                        return ProcessMessage(fullMessage);
+                    }
+                }
+                else if (message[0] == '4')
                 {
                     byte mode = (byte)message[1].GetHexVal();
                     if (mode == (byte)Mode)
