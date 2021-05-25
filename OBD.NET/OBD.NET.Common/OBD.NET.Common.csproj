@@ -1,17 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <Authors>Wyrez / Roman Lumetsberger</Authors>
+    <TargetFrameworks>net5.0;netstandard1.4</TargetFrameworks>
+    <Authors>Darth Affe / Roman Lumetsberger</Authors>
     <Company>-</Company>
     <Product>OBD.NET</Product>
     <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.1.0</Version>
+
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryType>Github</RepositoryType>
+    <RepositoryUrl>https://github.com/DarthAffe/OBD.NET</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DarthAffe/OBD.NET</PackageProjectUrl>
+    <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+
+    <OutputPath>..\bin\</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <DefineConstants>NET5_0;NETFULL</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.4'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_4</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <NoWarn>$(NoWarn);CS1591;CS1572;CS1573</NoWarn>
+    <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+  </PropertyGroup>
 
 </Project>
