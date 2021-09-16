@@ -217,11 +217,23 @@ namespace OBD.NET.Common.Devices
                         else
                             Connection.Write(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
 
-                        //wait for command to finish
-                        _commandFinishedEvent.WaitOne();
+                        //wait for command to finish or command canceled
+                        while (!(_commandFinishedEvent.WaitOne(50) || _commandCancellationToken.IsCancellationRequested))
+                        {
+                        }
                     }
                 }
                 catch (OperationCanceledException) { /*ignore, because it is thrown when the cancellation token is canceled*/}
+
+                // if canceled set all commands as completed (with null result)
+                if (_commandCancellationToken.IsCancellationRequested)
+                {
+                    CurrentCommand?.CommandResult.WaitHandle.Set();
+                    foreach (var cmd in _commandQueue)
+                    {
+                        cmd.CommandResult.WaitHandle.Set();
+                    }
+                }
             }
         }
 
