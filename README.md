@@ -2,8 +2,8 @@
 C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter
 
 ## Projects
-* OBD.NET.Common - NetStandard 1.4 Library for platform independent stuff
-* OBD.NET.Desktop - Implemenation of SerialConnection on full .NET Framework
+* [OBD.NET.Common](https://www.nuget.org/packages/OBD.NET.Common) - NetStandard 1.4 Library for platform independent stuff
+* [OBD.NET.Desktop](https://www.nuget.org/packages/OBD.NET.Desktop) - Implemenation of SerialConnection on full .NET Framework
 * OBD.NET.Universal - Implementation of BluetoothSerialConnection for connecting to Bluetooth Adapter on UWP
 * OBD.NET.ConsoleClient - Example client application using SerialConnection on full .NET Framework
 
