@@ -5,10 +5,10 @@ using OBD.NET.Common.Devices;
 using OBD.NET.Common.Extensions;
 using OBD.NET.Common.Logging;
 using OBD.NET.Common.OBDData;
-using ODB.NET.Desktop.Communication;
-using ODB.NET.Desktop.Logging;
+using OBD.NET.Desktop.Communication;
+using OBD.NET.Desktop.Logging;
 
-namespace ODB.NET.ConsoleClient
+namespace OBD.NET.ConsoleClient
 {
     public class Program
     {

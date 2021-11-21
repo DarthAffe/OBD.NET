@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 // Source: http://antanas.veiverys.com/mono-serialport-datareceived-event-workaround-using-a-derived-class/
-namespace ODB.NET.Desktop.Communication
+namespace OBD.NET.Desktop.Communication
 {
     [DesignerCategory("Code")]
     public class EnhancedSerialPort : SerialPort
