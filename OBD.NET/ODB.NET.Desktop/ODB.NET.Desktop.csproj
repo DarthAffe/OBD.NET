@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net461</TargetFrameworks>
+    <TargetFrameworks>net5.0;net6.0;net461</TargetFrameworks>
     <Authors>Darth Affe / Roman Lumetsberger</Authors>
     <Company>-</Company>
     <Product>OBD.NET</Product>
@@ -23,6 +23,10 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <DefineConstants>NET5_0;NETFULL</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <DefineConstants>NET6_0;NETFULL</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -47,7 +51,7 @@
     <PackageReference Include="System.IO.Ports" Version="5.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <PackageReference Include="System.IO.Ports" Version="6.0.0" />
   </ItemGroup>
 
