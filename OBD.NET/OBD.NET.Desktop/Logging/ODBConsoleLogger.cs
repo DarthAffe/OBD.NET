@@ -1,7 +1,7 @@
 ﻿using System;
 using OBD.NET.Common.Logging;
 
-namespace ODB.NET.Desktop.Logging
+namespace OBD.NET.Desktop.Logging
 {
     /// <summary>
     /// Simple console logger

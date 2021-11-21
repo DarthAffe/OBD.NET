@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OBD.NET.Common.Communication;
 
-namespace ODB.NET.Desktop.Communication
+namespace OBD.NET.Desktop.Communication
 {
     public class SerialConnection : ISerialConnection
     {

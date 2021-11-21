@@ -54,9 +54,9 @@
       <Project>{D985B70E-CDF3-4CF1-AB5D-8D19C7FE7B31}</Project>
       <Name>OBD.NET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ODB.NET.Desktop\ODB.NET.Desktop.csproj">
+    <ProjectReference Include="..\OBD.NET.Desktop\OBD.NET.Desktop.csproj">
       <Project>{14CB98E1-95DE-4923-8896-FDF5171AA49E}</Project>
-      <Name>ODB.NET.Desktop</Name>
+      <Name>OBD.NET.Desktop</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
