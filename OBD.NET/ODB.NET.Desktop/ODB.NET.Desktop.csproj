@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net461</TargetFrameworks>
+    <TargetFrameworks>net6.0;net461</TargetFrameworks>
     <Authors>Darth Affe / Roman Lumetsberger</Authors>
     <Company>-</Company>
     <Product>OBD.NET</Product>
     <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
 
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryType>Github</RepositoryType>
@@ -45,6 +45,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="System.IO.Ports" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

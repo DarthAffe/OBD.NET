@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>net6.0;netstandard1.4</TargetFrameworks>
     <Authors>Darth Affe / Roman Lumetsberger</Authors>
     <Company>-</Company>
     <Product>OBD.NET</Product>
     <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
 
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryType>Github</RepositoryType>
@@ -41,6 +41,14 @@
     <Optimize>true</Optimize>
     <NoWarn>$(NoWarn);CS1591;CS1572;CS1573</NoWarn>
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
 </Project>
