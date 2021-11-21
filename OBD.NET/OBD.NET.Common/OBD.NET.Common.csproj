@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>net5.0;net6.0;netstandard1.4</TargetFrameworks>
     <Authors>Darth Affe / Roman Lumetsberger</Authors>
     <Company>-</Company>
     <Product>OBD.NET</Product>
@@ -25,6 +25,10 @@
     <DefineConstants>NET5_0;NETFULL</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <DefineConstants>NET6_0;NETFULL</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.4'">
     <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_4</DefineConstants>
   </PropertyGroup>
@@ -41,14 +45,6 @@
     <Optimize>true</Optimize>
     <NoWarn>$(NoWarn);CS1591;CS1572;CS1573</NoWarn>
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
 </Project>
