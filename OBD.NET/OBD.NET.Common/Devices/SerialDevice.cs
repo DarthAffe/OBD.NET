@@ -245,6 +245,7 @@ namespace OBD.NET.Common.Devices
         {
             _commandQueue.CompleteAdding();
             _commandCancellationToken?.Cancel();
+            _commandFinishedEvent.Set();
             _commandWorkerTask?.Wait();
             Connection?.Dispose();
         }
