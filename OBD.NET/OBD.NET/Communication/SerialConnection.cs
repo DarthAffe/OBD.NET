@@ -1,3 +1,5 @@
+#if NET5_0_OR_GREATER
+
 using System.IO.Ports;
 using System.Text;
 using OBD.NET.Communication.EventArgs;
@@ -69,3 +71,5 @@ public class SerialConnection : ISerialConnection
 
     #endregion
 }
+
+#endif
