@@ -2,53 +2,60 @@
 C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter
 
 ## Projects
-* [OBD.NET.Common](https://www.nuget.org/packages/OBD.NET.Common) - NetStandard 1.4 Library for platform independent stuff
-* [OBD.NET.Desktop](https://www.nuget.org/packages/OBD.NET.Desktop) - Implemenation of SerialConnection on full .NET Framework
+* [OBD.NET](https://www.nuget.org/packages/OBD.NET) - OBD-II implementation in .NET 6/5 and .NET Standard 1.4
 * OBD.NET.Universal - Implementation of BluetoothSerialConnection for connecting to Bluetooth Adapter on UWP
-* OBD.NET.ConsoleClient - Example client application using SerialConnection on full .NET Framework
+* ConsoleClient - Example client application using SerialConnection, running with .NET 6
 
 ## Usage
-* Add OBD.NET.Common and OBD.NET.Desktop packages to project
+* Add the `OBD.NET` package to project
 ```csharp
-class Program
+
+public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         if (args.Length < 1)
         {
             Console.WriteLine("Parameter ComPort needed.");
+
+            IEnumerable<string> availablePorts = SerialConnection.GetAvailablePorts();
+
+            Console.WriteLine("\nAvailable ports:");
+
+            foreach (string port in availablePorts)
+            {
+                Console.WriteLine(port);
+            }
+
             return;
         }
 
-        var comPort = args[0];
+        string comPort = args[0];
 
-        using (SerialConnection connection = new SerialConnection(comPort))
-        using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
+        using SerialConnection connection = new SerialConnection(comPort);
+        using ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
+
+        dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
+        dev.SubscribeDataReceived<EngineFuelRate>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
+
+        dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
+
+        dev.Initialize();
+        dev.RequestData<FuelType>();
+
+        for (int i = 0; i < 5; i++)
         {
-            dev.SubscribeDataReceived<EngineRPM>((sender, data) =>
-            {
-                Console.WriteLine("EngineRPM: " + data.Data.Rpm);
-            });
-
-            dev.SubscribeDataReceived<VehicleSpeed>((sender, data) =>
-            {
-                Console.WriteLine("VehicleSpeed: " + data.Data.Speed);
-            });
-
-            dev.Initialize();
-            dev.RequestData<FuelType>();
-            for (int i = 0; i < 5; i++)
-            {
-                dev.RequestData<EngineRPM>();
-                dev.RequestData<VehicleSpeed>();
-                Thread.Sleep(1000);
-            }
-            Console.ReadLine();
+            dev.RequestData<EngineRPM>();
+            dev.RequestData<EngineFuelRate>();
+            Thread.Sleep(1000);
         }
 
-        //Async example
-        MainAsync(comPort).Wait();
+        Console.ReadLine();
 
+        //Async example
+        // MainAsync(comPort).Wait();
+
+        //Console.ReadLine();
     }
 
     /// <summary>
@@ -58,22 +65,22 @@ class Program
     /// <returns></returns>
     public static async Task MainAsync(string comPort)
     {
-        using (SerialConnection connection = new SerialConnection(comPort))
-        using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
-        {
-            dev.Initialize();
-            var data = await dev.RequestDataAsync<EngineRPM>();
-            Console.WriteLine("Data: " + data.Rpm);
-            data = await dev.RequestDataAsync<EngineRPM>();
-            Console.WriteLine("Data: " + data.Rpm);
-            var data2 = await dev.RequestDataAsync<VehicleSpeed>();
-            Console.WriteLine("Data: " + data2.Speed);
-            data = await dev.RequestDataAsync<EngineRPM>();
-            Console.WriteLine("Data: " + data.Rpm);
+        using SerialConnection connection = new SerialConnection(comPort);
+        using ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
-        }
+        dev.Initialize();
+
+        EngineRPM engineRpm = await dev.RequestDataAsync<EngineRPM>();
+        Console.WriteLine("Data: " + engineRpm.Rpm);
+
+        engineRpm = await dev.RequestDataAsync<EngineRPM>();
+        Console.WriteLine("Data: " + engineRpm.Rpm);
+
+        VehicleSpeed vehicleSpeed = await dev.RequestDataAsync<VehicleSpeed>();
+        Console.WriteLine("Data: " + vehicleSpeed.Speed);
+
+        engineRpm = await dev.RequestDataAsync<EngineRPM>();
+        Console.WriteLine("Data: " + engineRpm.Rpm);
     }
 }
 ```
-
-
