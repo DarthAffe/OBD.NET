@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net6.0;net5.0;netstandard2.0</TargetFrameworks>
+        <LangVersion>10</LangVersion>
+
+        <Authors>Darth Affe / Roman Lumetsberger</Authors>
+        <Company>-</Company>
+        <Product>OBD.NET</Product>
+        <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
+        <Version>1.2.0</Version>
+
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <RepositoryType>Github</RepositoryType>
+        <RepositoryUrl>https://github.com/DarthAffe/OBD.NET</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/DarthAffe/OBD.NET</PackageProjectUrl>
+        <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+
+        <OutputPath>..\bin\</OutputPath>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IncludeSource>True</IncludeSource>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AssemblyName>OBD.NET</AssemblyName>
+        <RootNamespace>OBD.NET</RootNamespace>
+        <PackageId>OBD.NET</PackageId>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DebugType>portable</DebugType>
+        <Optimize>true</Optimize>
+        <NoWarn>$(NoWarn);CS1591;CS1572;CS1573</NoWarn>
+        <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.IO.Ports" Version="5.0.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="System.IO.Ports" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>
