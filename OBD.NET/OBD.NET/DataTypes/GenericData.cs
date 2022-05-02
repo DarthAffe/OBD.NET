@@ -9,7 +9,7 @@ public abstract class GenericData
     public double MaxValue { get; }
     public bool IsFloatingPointValue { get; }
 
-    protected abstract string Unit { get; }
+    protected abstract string? Unit { get; }
 
     #endregion
 

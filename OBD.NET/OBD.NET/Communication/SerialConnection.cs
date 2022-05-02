@@ -1,7 +1,6 @@
 #if NET5_0_OR_GREATER
 
 using System.IO.Ports;
-using System.Text;
 using OBD.NET.Communication.EventArgs;
 
 namespace OBD.NET.Communication;
@@ -12,19 +11,16 @@ public class SerialConnection : ISerialConnection
 
     private readonly SerialPort _serialPort;
 
-    public bool IsOpen => _serialPort?.IsOpen ?? false;
+    public bool IsOpen => _serialPort.IsOpen;
     public bool IsAsync => false;
 
     private readonly byte[] _readBuffer = new byte[1024];
-    private readonly StringBuilder _lineBuffer = new();
-
-    private readonly AutoResetEvent _hasPrompt = new(true);
 
     #endregion
 
     #region Events
 
-    public event EventHandler<DataReceivedEventArgs> DataReceived = delegate {  };
+    public event EventHandler<DataReceivedEventArgs>? DataReceived = delegate {  };
 
     #endregion
 
@@ -61,7 +57,7 @@ public class SerialConnection : ISerialConnection
         DataReceived?.Invoke(this, new DataReceivedEventArgs(count, _readBuffer));
     }
 
-    public void Dispose() => _serialPort?.Dispose();
+    public void Dispose() => _serialPort.Dispose();
 
     public Task ConnectAsync() => throw new NotSupportedException("Asynchronous operations not supported");
 

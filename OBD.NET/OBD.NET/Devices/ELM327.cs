@@ -21,7 +21,7 @@ public class ELM327 : SerialDevice
 
     protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
 
-    protected string MessageChunk { get; set; }
+    protected string MessageChunk { get; set; } = string.Empty;
 
     #endregion
 
@@ -30,13 +30,13 @@ public class ELM327 : SerialDevice
     public delegate void DataReceivedEventHandler<T>(object sender, DataReceivedEventArgs<T> args) where T : IOBDData;
 
     public delegate void RawDataReceivedEventHandler(object sender, RawDataReceivedEventArgs args);
-    public event RawDataReceivedEventHandler RawDataReceived;
+    public event RawDataReceivedEventHandler? RawDataReceived;
 
     #endregion
 
     #region Constructors
 
-    public ELM327(ISerialConnection connection, IOBDLogger logger = null)
+    public ELM327(ISerialConnection connection, IOBDLogger? logger = null)
         : base(connection, logger: logger)
     { }
 
@@ -124,7 +124,7 @@ public class ELM327 : SerialDevice
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public virtual async Task<T> RequestDataAsync<T>()
+    public virtual async Task<T?> RequestDataAsync<T>()
         where T : class, IOBDData, new()
     {
         Logger?.WriteLine("Requesting Type " + typeof(T).Name + " ...", OBDLogLevel.Debug);
@@ -135,9 +135,8 @@ public class ELM327 : SerialDevice
     /// <summary>
     /// Requests the data asynchronous and return the data when available
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public virtual async Task<IOBDData> RequestDataAsync(Type type)
+    public virtual async Task<IOBDData?> RequestDataAsync(Type type)
     {
         Logger?.WriteLine("Requesting Type " + type.Name + " ...", OBDLogLevel.Debug);
         byte pid = ResolvePid(type);
@@ -148,7 +147,7 @@ public class ELM327 : SerialDevice
     /// Request data based on a pid
     /// </summary>
     /// <param name="pid">The pid of the requested data</param>
-    public virtual async Task<object> RequestDataAsync(byte pid)
+    public virtual async Task<object?> RequestDataAsync(byte pid)
     {
         Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
         CommandResult result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
@@ -157,10 +156,8 @@ public class ELM327 : SerialDevice
         return result.Result;
     }
 
-    protected override object ProcessMessage(string message)
+    protected override object? ProcessMessage(string message)
     {
-        if (message == null) return null;
-
         DateTime timestamp = DateTime.Now;
 
         RawDataReceived?.Invoke(this, new RawDataReceivedEventArgs(message, timestamp));
@@ -177,7 +174,7 @@ public class ELM327 : SerialDevice
                 else if (message[0] == '1')
                 {
                     string fullMessage = MessageChunk + message.Substring(2, message.Length - 2);
-                    MessageChunk = null;
+                    MessageChunk = string.Empty;
                     return ProcessMessage(fullMessage);
                 }
             }
@@ -187,15 +184,15 @@ public class ELM327 : SerialDevice
                 if (mode == (byte)Mode)
                 {
                     byte pid = (byte)message.Substring(2, 2).GetHexVal();
-                    if (DataTypeCache.TryGetValue(pid, out Type dataType))
+                    if (DataTypeCache.TryGetValue(pid, out Type? dataType))
                     {
-                        IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType);
+                        IOBDData obdData = (IOBDData)Activator.CreateInstance(dataType)!;
                         obdData.Load(message.Substring(4, message.Length - 4));
 
-                        if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager dataEventManager))
+                        if (DataReceivedEventHandlers.TryGetValue(dataType, out IDataEventManager? dataEventManager))
                             dataEventManager.RaiseEvent(this, obdData, timestamp);
 
-                        if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager genericDataEventManager))
+                        if (DataReceivedEventHandlers.TryGetValue(typeof(IOBDData), out IDataEventManager? genericDataEventManager))
                             genericDataEventManager.RaiseEvent(this, obdData, timestamp);
 
                         return obdData;
@@ -223,8 +220,7 @@ public class ELM327 : SerialDevice
 
     protected virtual byte AddToPidCache(Type obdDataType)
     {
-        IOBDData data = (IOBDData)Activator.CreateInstance(obdDataType);
-        if (data == null) throw new ArgumentException("Has to implement IOBDData", nameof(obdDataType));
+        if (Activator.CreateInstance(obdDataType) is not IOBDData data) throw new ArgumentException("Has to implement IOBDData", nameof(obdDataType));
 
         byte pid = data.PID;
 
@@ -267,7 +263,7 @@ public class ELM327 : SerialDevice
 
     public void SubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
     {
-        if (!DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
+        if (!DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager? eventManager))
             DataReceivedEventHandlers.Add(typeof(T), (eventManager = new GenericDataEventManager<T>()));
 
         ((GenericDataEventManager<T>)eventManager).DataReceived += eventHandler;
@@ -275,7 +271,7 @@ public class ELM327 : SerialDevice
 
     public void UnsubscribeDataReceived<T>(DataReceivedEventHandler<T> eventHandler) where T : IOBDData
     {
-        if (DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager eventManager))
+        if (DataReceivedEventHandlers.TryGetValue(typeof(T), out IDataEventManager? eventManager))
             ((GenericDataEventManager<T>)eventManager).DataReceived -= eventHandler;
     }
 

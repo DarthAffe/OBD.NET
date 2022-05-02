@@ -9,7 +9,7 @@ public class GenericDataEventManager<T> : IDataEventManager
 {
     #region Events
 
-    internal event ELM327.DataReceivedEventHandler<T> DataReceived;
+    internal event ELM327.DataReceivedEventHandler<T>? DataReceived;
 
     #endregion
 

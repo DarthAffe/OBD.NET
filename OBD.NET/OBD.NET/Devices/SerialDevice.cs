@@ -17,16 +17,16 @@ public abstract class SerialDevice : IDisposable
     private readonly BlockingCollection<QueuedCommand> _commandQueue = new();
     private readonly StringBuilder _lineBuffer = new();
     private readonly AutoResetEvent _commandFinishedEvent = new(false);
-    private Task _commandWorkerTask;
-    private CancellationTokenSource _commandCancellationToken;
+    private Task? _commandWorkerTask;
+    private CancellationTokenSource? _commandCancellationToken;
 
     private volatile int _queueSize = 0;
     private readonly ManualResetEvent _queueEmptyEvent = new(true);
 
     public int QueueSize => _queueSize;
 
-    protected QueuedCommand CurrentCommand;
-    protected IOBDLogger Logger { get; }
+    protected QueuedCommand? CurrentCommand;
+    protected IOBDLogger? Logger { get; }
     protected ISerialConnection Connection { get; }
     protected char Terminator { get; set; }
 
@@ -40,7 +40,7 @@ public abstract class SerialDevice : IDisposable
     /// <param name="connection">connection.</param>
     /// <param name="terminator">terminator used for terminating the command message</param>
     /// <param name="logger">logger instance</param>
-    protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
+    protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger? logger = null)
     {
         this.Connection = connection;
         this.Terminator = terminator;
@@ -88,8 +88,7 @@ public abstract class SerialDevice : IDisposable
         _commandCancellationToken = new CancellationTokenSource();
         _commandWorkerTask = Task.Factory.StartNew(CommandWorker);
     }
-
-
+    
     /// <summary>
     /// Sends the command.
     /// </summary>
@@ -105,7 +104,7 @@ public abstract class SerialDevice : IDisposable
 
         QueuedCommand cmd = new(command);
         _queueEmptyEvent.Reset();
-        _queueSize++;
+        Interlocked.Increment(ref _queueSize);
         _commandQueue.Add(cmd);
 
         return cmd.CommandResult;
@@ -131,7 +130,7 @@ public abstract class SerialDevice : IDisposable
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The <see cref="DataReceivedEventArgs"/> instance containing the event data.</param>
-    private void OnDataReceived(object sender, DataReceivedEventArgs e)
+    private void OnDataReceived(object? sender, DataReceivedEventArgs e)
     {
         for (int i = 0; i < e.Count; i++)
         {
@@ -143,7 +142,7 @@ public abstract class SerialDevice : IDisposable
                     break;
 
                 case '>':
-                    CurrentCommand.CommandResult.WaitHandle.Set();
+                    CurrentCommand?.CommandResult.WaitHandle.Set();
                     _commandFinishedEvent.Set();
                     break;
 
@@ -178,8 +177,9 @@ public abstract class SerialDevice : IDisposable
     /// <param name="message">The message.</param>
     private void InternalProcessMessage(string message)
     {
-        object data = ProcessMessage(message);
-        CurrentCommand.CommandResult.Result = data;
+        object? data = ProcessMessage(message);
+        if (CurrentCommand != null)
+            CurrentCommand.CommandResult.Result = data;
     }
 
     /// <summary>
@@ -187,13 +187,15 @@ public abstract class SerialDevice : IDisposable
     /// </summary>
     /// <param name="message">message received</param>
     /// <returns>result data</returns>
-    protected abstract object ProcessMessage(string message);
+    protected abstract object? ProcessMessage(string message);
 
     /// <summary>
     /// Worker method for sending commands
     /// </summary>
     private async void CommandWorker()
     {
+        if (_commandCancellationToken == null) return;
+
         CancellationToken cancellationToken = _commandCancellationToken.Token;
 
         while (!_commandCancellationToken.IsCancellationRequested)
@@ -207,13 +209,14 @@ public abstract class SerialDevice : IDisposable
             {
                 if (_commandQueue.TryTake(out CurrentCommand, 10, cancellationToken))
                 {
-                    _queueSize--;
+                    Interlocked.Decrement(ref _queueSize);
 
                     Logger?.WriteLine("Writing Command: '" + CurrentCommand.CommandText.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
                     if (Connection.IsAsync)
                         await Connection.WriteAsync(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
                     else
+                        // ReSharper disable once MethodHasAsyncOverload
                         Connection.Write(Encoding.ASCII.GetBytes(CurrentCommand.CommandText));
 
                     // wait for command to finish or command canceled
@@ -233,7 +236,7 @@ public abstract class SerialDevice : IDisposable
 
     public void WaitQueue() => _queueEmptyEvent.WaitOne();
 
-    public async Task WaitQueueAsync() => await Task.Run(() => WaitQueue());
+    public async Task WaitQueueAsync() => await Task.Run(WaitQueue);
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -243,7 +246,7 @@ public abstract class SerialDevice : IDisposable
         _commandQueue.CompleteAdding();
         _commandCancellationToken?.Cancel();
         _commandWorkerTask?.Wait();
-        Connection?.Dispose();
+        Connection.Dispose();
     }
 
     #endregion

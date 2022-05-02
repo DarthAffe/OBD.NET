@@ -4,7 +4,7 @@ public class Ratio : GenericData
 {
     #region Properties & Fields
 
-    protected override string Unit => null;
+    protected override string? Unit => null;
 
     #endregion
 

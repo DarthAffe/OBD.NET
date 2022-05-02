@@ -6,7 +6,7 @@ public class CommandResult
 {
     #region Properties & Fields
 
-    public object Result { get; set; }
+    public object? Result { get; set; }
     public AsyncManualResetEvent WaitHandle { get; }
 
     #endregion

@@ -9,7 +9,7 @@ public abstract class AbstractOBDData : IOBDData
     public byte PID { get; }
     private readonly int _length;
 
-    private byte[] _rawData;
+    private byte[] _rawData = Array.Empty<byte>();
     public byte[] RawData
     {
         get => _rawData;

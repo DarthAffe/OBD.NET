@@ -28,13 +28,13 @@ public class ATCommand
     #region Properties & Fields
 
     public string Command { get; }
-    public string ExpectedResult { get; }
+    public string? ExpectedResult { get; }
 
     #endregion
 
     #region Constructors
 
-    private ATCommand(string command, string expectedResult = null)
+    private ATCommand(string command, string? expectedResult = null)
     {
         this.Command = command;
         this.ExpectedResult = expectedResult;

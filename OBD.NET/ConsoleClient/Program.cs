@@ -21,9 +21,7 @@ public class Program
             Console.WriteLine("\nAvailable ports:");
 
             foreach (string port in availablePorts)
-            {
                 Console.WriteLine(port);
-            }
 
             return;
         }
@@ -33,10 +31,10 @@ public class Program
         using SerialConnection connection = new(comPort);
         using ELM327 dev = new(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
-        dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
-        dev.SubscribeDataReceived<EngineFuelRate>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
+        dev.SubscribeDataReceived<EngineRPM>((_, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
+        dev.SubscribeDataReceived<EngineFuelRate>((_, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
 
-        dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
+        dev.SubscribeDataReceived<IOBDData>((_, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
         dev.Initialize();
         dev.RequestData<FuelType>();
@@ -66,18 +64,18 @@ public class Program
         using SerialConnection connection = new(comPort);
         using ELM327 dev = new(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
-        dev.Initialize();
+        await dev.InitializeAsync();
 
-        EngineRPM engineRpm = await dev.RequestDataAsync<EngineRPM>();
-        Console.WriteLine("Data: " + engineRpm.Rpm);
-
-        engineRpm = await dev.RequestDataAsync<EngineRPM>();
-        Console.WriteLine("Data: " + engineRpm.Rpm);
-
-        VehicleSpeed vehicleSpeed = await dev.RequestDataAsync<VehicleSpeed>();
-        Console.WriteLine("Data: " + vehicleSpeed.Speed);
+        EngineRPM? engineRpm = await dev.RequestDataAsync<EngineRPM>();
+        Console.WriteLine("Data: " + (engineRpm?.Rpm.ToString() ?? "-"));
 
         engineRpm = await dev.RequestDataAsync<EngineRPM>();
-        Console.WriteLine("Data: " + engineRpm.Rpm);
+        Console.WriteLine("Data: " + (engineRpm?.Rpm.ToString() ?? "-"));
+
+        VehicleSpeed? vehicleSpeed = await dev.RequestDataAsync<VehicleSpeed>();
+        Console.WriteLine("Data: " + (vehicleSpeed?.Speed.ToString() ?? "-"));
+
+        engineRpm = await dev.RequestDataAsync<EngineRPM>();
+        Console.WriteLine("Data: " + (engineRpm?.Rpm.ToString() ?? "-"));
     }
 }

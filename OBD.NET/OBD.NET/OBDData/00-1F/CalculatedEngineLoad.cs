@@ -6,7 +6,7 @@ public class CalculatedEngineLoad : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Load => new(A / 2.55, 0, 100);
+    public new Percent Load => new(A / 2.55, 0, 100);
 
     #endregion
 

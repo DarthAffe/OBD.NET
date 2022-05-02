@@ -22,7 +22,7 @@ public class Degree : GenericData
 
     #region Methods
 
-    public override string ToString() => (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + (Unit ?? string.Empty);
+    public override string ToString() => (IsFloatingPointValue ? Value.ToString("0.00") : Value.ToString()) + Unit;
 
     #endregion
 }

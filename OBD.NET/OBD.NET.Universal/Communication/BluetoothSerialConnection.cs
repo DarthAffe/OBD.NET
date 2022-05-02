@@ -46,7 +46,6 @@ namespace OBD.NET.Communication
         /// Initializes a new instance of the <see cref="BluetoothSerialConnection"/> class.
         /// </summary>
         /// <param name="deviceName">Name of the _device.</param>
-        /// <param name="logger">The logger.</param>
         public BluetoothSerialConnection(string deviceName)
         {
             this._device = deviceName;

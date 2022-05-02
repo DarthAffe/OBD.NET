@@ -26,8 +26,8 @@ public class AsyncManualResetEvent
     public void Set()
     {
         TaskCompletionSource<bool> tcs = _tcs;
-        Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s).TrySetResult(true),
-            tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
+        Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s!).TrySetResult(true),
+                              tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
 
         tcs.Task.Wait();
     }
@@ -40,8 +40,7 @@ public class AsyncManualResetEvent
         while (true)
         {
             TaskCompletionSource<bool> tcs = _tcs;
-            if (!tcs.Task.IsCompleted ||
-                (Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs))
+            if (!tcs.Task.IsCompleted || (Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs))
                 return;
         }
     }
