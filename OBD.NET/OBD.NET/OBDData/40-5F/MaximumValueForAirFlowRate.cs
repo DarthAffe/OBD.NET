@@ -6,7 +6,7 @@ public class MaximumValueForAirFlowRate : AbstractOBDData
 {
     #region Properties & Fields
 
-    public GramPerSec Value => new GramPerSec(A * 10, 0, 2550);
+    public GramPerSec Value => new(A * 10, 0, 2550);
 
     #endregion
 

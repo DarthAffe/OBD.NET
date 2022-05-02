@@ -6,7 +6,7 @@ public class TimingAdvance : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Degree Timing => new Degree((A / 2.0) - 64, -64, 63.5);
+    public Degree Timing => new((A / 2.0) - 64, -64, 63.5);
 
     #endregion
 

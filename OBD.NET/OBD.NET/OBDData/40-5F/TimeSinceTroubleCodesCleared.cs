@@ -6,7 +6,7 @@ public class TimeSinceTroubleCodesCleared : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Minute Time => new Minute((256 * A) + B, 0, 65535);
+    public Minute Time => new((256 * A) + B, 0, 65535);
 
     #endregion
 

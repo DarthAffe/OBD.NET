@@ -6,7 +6,7 @@ public class EthanolFuel : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Value => new Percent(A / 2.55, 0, 100);
+    public Percent Value => new(A / 2.55, 0, 100);
 
     #endregion
 

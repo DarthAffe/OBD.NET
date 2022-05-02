@@ -6,7 +6,7 @@ public class EngineRPM : AbstractOBDData
 {
     #region Properties & Fields
 
-    public RevolutionsPerMinute Rpm => new RevolutionsPerMinute(((256 * A) + B) / 4.0, 0, 16383.75);
+    public RevolutionsPerMinute Rpm => new(((256 * A) + B) / 4.0, 0, 16383.75);
 
     #endregion
 

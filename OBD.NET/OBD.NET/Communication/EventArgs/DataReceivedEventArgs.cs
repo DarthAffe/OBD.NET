@@ -28,8 +28,8 @@ public class DataReceivedEventArgs : System.EventArgs
     /// <param name="data">The data.</param>
     public DataReceivedEventArgs(int count, byte[] data)
     {
-        Count = count;
-        Data = data;
+        this.Count = count;
+        this.Data = data;
     }
 
     #endregion

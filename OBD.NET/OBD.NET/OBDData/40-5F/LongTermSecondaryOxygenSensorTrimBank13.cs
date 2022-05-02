@@ -6,8 +6,8 @@ public class LongtTermSecondaryOxygenSensorTrimBank13 : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Bank1 => new Percent((A / 1.28) - 100, -100, 99.2);
-    public Percent Bank3 => new Percent((B / 1.28) - 100, -100, 99.2);
+    public Percent Bank1 => new((A / 1.28) - 100, -100, 99.2);
+    public Percent Bank3 => new((B / 1.28) - 100, -100, 99.2);
 
     #endregion
 

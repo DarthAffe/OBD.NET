@@ -6,7 +6,7 @@ public class FuelRailAbsolutePressure : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Kilopascal Pressure => new Kilopascal(10 * ((256 * A) + B), 0, 655350);
+    public Kilopascal Pressure => new(10 * ((256 * A) + B), 0, 655350);
 
     #endregion
 

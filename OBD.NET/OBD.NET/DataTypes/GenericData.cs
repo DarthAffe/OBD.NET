@@ -17,17 +17,19 @@ public abstract class GenericData
 
     protected GenericData(double value, double minValue, double maxValue)
     {
-        Value = value;
-        MinValue = minValue;
-        MaxValue = maxValue;
+        this.Value = value;
+        this.MinValue = minValue;
+        this.MaxValue = maxValue;
+
         IsFloatingPointValue = true;
     }
 
     protected GenericData(int value, int minValue, int maxValue)
     {
-        Value = value;
-        MinValue = minValue;
-        MaxValue = maxValue;
+        this.Value = value;
+        this.MinValue = minValue;
+        this.MaxValue = maxValue;
+
         IsFloatingPointValue = false;
     }
 

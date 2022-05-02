@@ -6,7 +6,7 @@ public class EngineReferenceTorque : AbstractOBDData
 {
     #region Properties & Fields
 
-    public NewtonMetre Torque => new NewtonMetre((256 * A) + B, 0, 65535);
+    public NewtonMetre Torque => new((256 * A) + B, 0, 65535);
 
     #endregion
 

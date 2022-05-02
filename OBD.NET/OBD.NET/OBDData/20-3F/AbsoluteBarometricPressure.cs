@@ -6,7 +6,7 @@ public class AbsoluteBarometricPressure : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Kilopascal Pressure => new Kilopascal(A, 0, 255);
+    public Kilopascal Pressure => new(A, 0, 255);
 
     #endregion
 

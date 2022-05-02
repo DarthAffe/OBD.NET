@@ -6,8 +6,8 @@ public class OxygenSensor5FuelTrim : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Volt Voltage => new Volt(A / 200.0, 0, 1.275);
-    public Percent ShortTermFuelTrim => new Percent((B / 1.28) - 100, -100, 99.2);
+    public Volt Voltage => new(A / 200.0, 0, 1.275);
+    public Percent ShortTermFuelTrim => new((B / 1.28) - 100, -100, 99.2);
     public bool IsSensorUsed => B != 0xFF;
 
     #endregion

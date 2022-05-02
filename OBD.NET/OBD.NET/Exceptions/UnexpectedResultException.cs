@@ -14,22 +14,22 @@ public class UnexpectedResultException : Exception
     public UnexpectedResultException(string result, string expectedResult)
         : this($"Unexpected result '{result}'. Expected was '{expectedResult}'", result, expectedResult)
     {
-        Result = result;
-        ExpectedResult = expectedResult;
+        this.Result = result;
+        this.ExpectedResult = expectedResult;
     }
 
     public UnexpectedResultException(string message, string result, string expectedResult)
         : base(message)
     {
-        Result = result;
-        ExpectedResult = expectedResult;
+        this.Result = result;
+        this.ExpectedResult = expectedResult;
     }
 
     public UnexpectedResultException(string message, Exception innerException, string result, string expectedResult)
         : base(message, innerException)
     {
-        Result = result;
-        ExpectedResult = expectedResult;
+        this.Result = result;
+        this.ExpectedResult = expectedResult;
     }
 
     #endregion

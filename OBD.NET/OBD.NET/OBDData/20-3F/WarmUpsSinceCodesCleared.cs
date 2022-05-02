@@ -6,7 +6,7 @@ public class WarmUpsSinceCodesCleared : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Count WarmUps => new Count(A, 0, 255);
+    public Count WarmUps => new(A, 0, 255);
 
     #endregion
 

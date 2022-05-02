@@ -6,7 +6,7 @@ public class LongTermFuelTrimBank1 : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Trim => new Percent((A / 1.28) - 100, -100, 99.2);
+    public Percent Trim => new((A / 1.28) - 100, -100, 99.2);
 
     #endregion
 

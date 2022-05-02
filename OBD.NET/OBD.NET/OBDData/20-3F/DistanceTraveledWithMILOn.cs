@@ -6,7 +6,7 @@ public class DistanceTraveledWithMILOn : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Kilometre Distance => new Kilometre((256 * A) + B, 0, 65535);
+    public Kilometre Distance => new((256 * A) + B, 0, 65535);
 
     #endregion
 

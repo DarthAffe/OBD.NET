@@ -6,7 +6,7 @@ public class FuelTankLevelInput : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Level => new Percent(A / 2.55, 0, 100);
+    public Percent Level => new(A / 2.55, 0, 100);
 
     #endregion
 

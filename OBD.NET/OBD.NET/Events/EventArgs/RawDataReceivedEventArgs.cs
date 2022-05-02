@@ -13,8 +13,8 @@ public class RawDataReceivedEventArgs
 
     public RawDataReceivedEventArgs(string data, DateTime timestamp)
     {
-        Data = data;
-        Timestamp = timestamp;
+        this.Data = data;
+        this.Timestamp = timestamp;
     }
 
     #endregion

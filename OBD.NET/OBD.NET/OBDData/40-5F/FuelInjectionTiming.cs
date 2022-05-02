@@ -6,7 +6,7 @@ public class FuelInjectionTiming : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Degree Timing => new Degree((((256 * A) + B) / 128.0) - 210, -210, 301.992);
+    public Degree Timing => new((((256 * A) + B) / 128.0) - 210, -210, 301.992);
 
     #endregion
 

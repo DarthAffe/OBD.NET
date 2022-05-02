@@ -7,7 +7,7 @@ public class QueuedCommand
 {
     #region Properties & Fields
 
-    public string CommandText { get; private set; }
+    public string CommandText { get; }
 
     public CommandResult CommandResult { get; }
 
@@ -17,7 +17,7 @@ public class QueuedCommand
 
     public QueuedCommand(string commandText)
     {
-        CommandText = commandText;
+        this.CommandText = commandText;
 
         CommandResult = new CommandResult();
     }

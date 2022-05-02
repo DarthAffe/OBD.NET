@@ -6,7 +6,7 @@ public class CommandedEvaporativePurge : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Purge => new Percent(A / 2.55, 0, 100);
+    public Percent Purge => new(A / 2.55, 0, 100);
 
     #endregion
 

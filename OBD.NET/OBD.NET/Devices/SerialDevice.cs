@@ -14,14 +14,14 @@ public abstract class SerialDevice : IDisposable
 {
     #region Properties & Fields
 
-    private readonly BlockingCollection<QueuedCommand> _commandQueue = new BlockingCollection<QueuedCommand>();
-    private readonly StringBuilder _lineBuffer = new StringBuilder();
-    private readonly AutoResetEvent _commandFinishedEvent = new AutoResetEvent(false);
+    private readonly BlockingCollection<QueuedCommand> _commandQueue = new();
+    private readonly StringBuilder _lineBuffer = new();
+    private readonly AutoResetEvent _commandFinishedEvent = new(false);
     private Task _commandWorkerTask;
     private CancellationTokenSource _commandCancellationToken;
 
     private volatile int _queueSize = 0;
-    private readonly ManualResetEvent _queueEmptyEvent = new ManualResetEvent(true);
+    private readonly ManualResetEvent _queueEmptyEvent = new(true);
 
     public int QueueSize => _queueSize;
 
@@ -42,9 +42,9 @@ public abstract class SerialDevice : IDisposable
     /// <param name="logger">logger instance</param>
     protected SerialDevice(ISerialConnection connection, char terminator = '\r', IOBDLogger logger = null)
     {
-        Connection = connection;
-        Terminator = terminator;
-        Logger = logger;
+        this.Connection = connection;
+        this.Terminator = terminator;
+        this.Logger = logger;
 
         connection.DataReceived += OnDataReceived;
     }
@@ -103,7 +103,7 @@ public abstract class SerialDevice : IDisposable
         command = PrepareCommand(command);
         Logger?.WriteLine("Queuing Command: '" + command.Replace('\r', '\'') + "'", OBDLogLevel.Verbose);
 
-        QueuedCommand cmd = new QueuedCommand(command);
+        QueuedCommand cmd = new(command);
         _queueEmptyEvent.Reset();
         _queueSize++;
         _commandQueue.Add(cmd);

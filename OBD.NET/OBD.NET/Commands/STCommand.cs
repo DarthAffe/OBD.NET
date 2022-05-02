@@ -7,14 +7,14 @@ public class STCommand
 
     //TODO DarthAffe 19.03.2017: Implement all commands
 
-    internal static readonly STCommand AddPassFilter = new STCommand("STFAP");
-    internal static readonly STCommand AddBlockFilter = new STCommand("STFAB");
-    internal static readonly STCommand AddFlowControlFilter = new STCommand("STFAFC");
-    internal static readonly STCommand ClearPassFilters = new STCommand("STFCP");
-    internal static readonly STCommand ClearBlockFilters = new STCommand("STFCB");
-    internal static readonly STCommand ClearFlowControlFilters = new STCommand("STFCFC");
-    internal static readonly STCommand Monitor = new STCommand("STM");
-    internal static readonly STCommand MonitorAll = new STCommand("STMA");
+    internal static readonly STCommand AddPassFilter = new("STFAP");
+    internal static readonly STCommand AddBlockFilter = new("STFAB");
+    internal static readonly STCommand AddFlowControlFilter = new("STFAFC");
+    internal static readonly STCommand ClearPassFilters = new("STFCP");
+    internal static readonly STCommand ClearBlockFilters = new("STFCB");
+    internal static readonly STCommand ClearFlowControlFilters = new("STFCFC");
+    internal static readonly STCommand Monitor = new("STM");
+    internal static readonly STCommand MonitorAll = new("STMA");
 
     // ReSharper restore InconsistentNaming
     #endregion
@@ -29,7 +29,7 @@ public class STCommand
 
     protected STCommand(string command)
     {
-        Command = command;
+        this.Command = command;
     }
 
     #endregion

@@ -6,11 +6,11 @@ public class EnginePercentTorqueData : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Idle => new Percent(A - 125, -125, 125);
-    public Percent EnginePoint1 => new Percent(B - 125, -125, 125);
-    public Percent EnginePoint2 => new Percent(C - 125, -125, 125);
-    public Percent EnginePoint3 => new Percent(D - 125, -125, 125);
-    public Percent EnginePoint4 => new Percent(E - 125, -125, 125);
+    public Percent Idle => new(A - 125, -125, 125);
+    public Percent EnginePoint1 => new(B - 125, -125, 125);
+    public Percent EnginePoint2 => new(C - 125, -125, 125);
+    public Percent EnginePoint3 => new(D - 125, -125, 125);
+    public Percent EnginePoint4 => new(E - 125, -125, 125);
 
     #endregion
 

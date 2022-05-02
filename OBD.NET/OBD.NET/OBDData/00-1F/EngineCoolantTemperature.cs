@@ -6,7 +6,7 @@ public class EngineCoolantTemperature : AbstractOBDData
 {
     #region Properties & Fields
 
-    public DegreeCelsius Temperature => new DegreeCelsius(A - 40, -40, 215);
+    public DegreeCelsius Temperature => new(A - 40, -40, 215);
 
     #endregion
 

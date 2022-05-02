@@ -6,7 +6,7 @@ public class EngineFuelRate : AbstractOBDData
 {
     #region Properties & Fields
 
-    public LitresPerHour FuelRate => new LitresPerHour(((256 * A) + B) / 20.0, 0, 3212.75);
+    public LitresPerHour FuelRate => new(((256 * A) + B) / 20.0, 0, 3212.75);
 
     #endregion
 

@@ -7,7 +7,7 @@ public class AsyncManualResetEvent
 {
     #region Properties & Fields
 
-    private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
+    private volatile TaskCompletionSource<bool> _tcs = new();
 
     #endregion
 

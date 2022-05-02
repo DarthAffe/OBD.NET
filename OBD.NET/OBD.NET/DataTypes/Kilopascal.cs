@@ -22,7 +22,7 @@ public class Kilopascal : GenericData
 
     #region Operators
 
-    public static explicit operator Pascal(Kilopascal pa) => new Pascal(pa.Value / 1000.0, pa.MinValue / 1000.0, pa.MaxValue / 1000.0);
+    public static explicit operator Pascal(Kilopascal pa) => new(pa.Value / 1000.0, pa.MinValue / 1000.0, pa.MaxValue / 1000.0);
 
     #endregion
 }

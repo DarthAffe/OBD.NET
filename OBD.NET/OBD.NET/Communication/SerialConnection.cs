@@ -16,9 +16,9 @@ public class SerialConnection : ISerialConnection
     public bool IsAsync => false;
 
     private readonly byte[] _readBuffer = new byte[1024];
-    private readonly StringBuilder _lineBuffer = new StringBuilder();
+    private readonly StringBuilder _lineBuffer = new();
 
-    private readonly AutoResetEvent _hasPrompt = new AutoResetEvent(true);
+    private readonly AutoResetEvent _hasPrompt = new(true);
 
     #endregion
 

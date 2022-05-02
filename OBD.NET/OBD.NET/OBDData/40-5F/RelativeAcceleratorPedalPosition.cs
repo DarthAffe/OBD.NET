@@ -6,7 +6,7 @@ public class RelativeAcceleratorPedalPosition : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent PedalPosition => new Percent(A / 2.55, 0, 100);
+    public Percent PedalPosition => new(A / 2.55, 0, 100);
 
     #endregion
 

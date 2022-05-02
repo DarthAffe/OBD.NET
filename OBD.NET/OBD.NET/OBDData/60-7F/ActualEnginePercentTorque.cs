@@ -6,7 +6,7 @@ public class ActualEnginePercentTorque : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent Torque => new Percent(A - 125, -125, 125);
+    public Percent Torque => new(A - 125, -125, 125);
 
     #endregion
 

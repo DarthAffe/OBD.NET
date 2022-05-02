@@ -6,7 +6,7 @@ public class CatalystTemperatureBank1Sensor2 : AbstractOBDData
 {
     #region Properties & Fields
 
-    public DegreeCelsius Temperature => new DegreeCelsius((((256 * A) + B) / 10.0) - 40, -40, 6513.5);
+    public DegreeCelsius Temperature => new((((256 * A) + B) / 10.0) - 40, -40, 6513.5);
 
     #endregion
 

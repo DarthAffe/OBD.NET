@@ -6,7 +6,7 @@ public class VehicleSpeed : AbstractOBDData
 {
     #region Properties & Fields
 
-    public KilometrePerHour Speed => new KilometrePerHour(A, 0, 255);
+    public KilometrePerHour Speed => new(A, 0, 255);
 
     #endregion
 

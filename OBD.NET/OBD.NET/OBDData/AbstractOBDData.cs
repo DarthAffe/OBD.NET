@@ -24,11 +24,11 @@ public abstract class AbstractOBDData : IOBDData
 
     public bool IsValid => RawData.Length == _length;
 
-    protected byte A => RawData.Length > 0 ? RawData[0] : default(byte);
-    protected byte B => RawData.Length > 1 ? RawData[1] : default(byte);
-    protected byte C => RawData.Length > 2 ? RawData[2] : default(byte);
-    protected byte D => RawData.Length > 3 ? RawData[3] : default(byte);
-    protected byte E => RawData.Length > 4 ? RawData[4] : default(byte);
+    protected byte A => RawData.Length > 0 ? RawData[0] : default;
+    protected byte B => RawData.Length > 1 ? RawData[1] : default;
+    protected byte C => RawData.Length > 2 ? RawData[2] : default;
+    protected byte D => RawData.Length > 3 ? RawData[3] : default;
+    protected byte E => RawData.Length > 4 ? RawData[4] : default;
 
     #endregion
 
@@ -36,14 +36,14 @@ public abstract class AbstractOBDData : IOBDData
 
     protected AbstractOBDData(byte pid, int length)
     {
-        PID = pid;
-        _length = length;
+        this.PID = pid;
+        this._length = length;
     }
 
     protected AbstractOBDData(byte pid, int length, byte[] rawData)
         : this(pid, length)
     {
-        RawData = rawData;
+        this.RawData = rawData;
     }
 
     #endregion
@@ -63,7 +63,7 @@ public abstract class AbstractOBDData : IOBDData
         }
         catch
         {
-            _rawData = new byte[0];
+            _rawData = Array.Empty<byte>();
             throw;
         }
     }

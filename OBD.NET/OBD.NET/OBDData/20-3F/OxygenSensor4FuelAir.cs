@@ -6,8 +6,8 @@ public class OxygenSensor4FuelAir : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Ratio FuelAirEquivalenceRatio => new Ratio((2.0 / 25536.0) * ((256 * A) + B), 0, 2 - double.Epsilon);
-    public Volt Voltage => new Volt((80 / 25536.0) * ((256 * C) + D), 0, 8 - double.Epsilon);
+    public Ratio FuelAirEquivalenceRatio => new((2.0 / 25536.0) * ((256 * A) + B), 0, 2 - double.Epsilon);
+    public Volt Voltage => new((80 / 25536.0) * ((256 * C) + D), 0, 8 - double.Epsilon);
 
     #endregion
 

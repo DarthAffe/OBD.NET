@@ -6,10 +6,10 @@ public class MaximumValues : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Ratio FuelAirEquivalenceRatio => new Ratio(A, 0, 255);
-    public Volt OxygenSensorVoltage => new Volt(B, 0, 255);
-    public Milliampere OxygenSensorCurrent => new Milliampere(C, 0, 255);
-    public Kilopascal IntakeManifoldAbsolutePressure => new Kilopascal(D * 10, 0, 2550);
+    public Ratio FuelAirEquivalenceRatio => new(A, 0, 255);
+    public Volt OxygenSensorVoltage => new(B, 0, 255);
+    public Milliampere OxygenSensorCurrent => new(C, 0, 255);
+    public Kilopascal IntakeManifoldAbsolutePressure => new(D * 10, 0, 2550);
 
     #endregion
 

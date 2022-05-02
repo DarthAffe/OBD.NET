@@ -30,8 +30,8 @@ public class Program
 
         string comPort = args[0];
 
-        using SerialConnection connection = new SerialConnection(comPort);
-        using ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
+        using SerialConnection connection = new(comPort);
+        using ELM327 dev = new(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
         dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
         dev.SubscribeDataReceived<EngineFuelRate>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
@@ -63,8 +63,8 @@ public class Program
     /// <returns></returns>
     public static async Task MainAsync(string comPort)
     {
-        using SerialConnection connection = new SerialConnection(comPort);
-        using ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
+        using SerialConnection connection = new(comPort);
+        using ELM327 dev = new(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
         dev.Initialize();
 

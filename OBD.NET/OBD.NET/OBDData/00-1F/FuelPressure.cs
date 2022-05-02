@@ -6,7 +6,7 @@ public class FuelPressure : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Kilopascal Pressure => new Kilopascal(3 * A, 0, 765);
+    public Kilopascal Pressure => new(3 * A, 0, 765);
 
     #endregion
 

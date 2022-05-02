@@ -10,8 +10,8 @@ public abstract class AbstractPidsSupported : AbstractOBDData
     {
         get
         {
-            List<int> supportedPids = new List<int>();
-            BitArray bitArray = new BitArray(new[] { D, C, B, A });
+            List<int> supportedPids = new();
+            BitArray bitArray = new(new[] { D, C, B, A });
 
             for (int i = 0x01; i <= 0x20; i++)
                 if (bitArray.Get(bitArray.Length - i))

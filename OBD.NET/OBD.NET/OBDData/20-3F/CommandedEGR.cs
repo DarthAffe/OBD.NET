@@ -6,7 +6,7 @@ public class CommandedEGR : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent EGR => new Percent(A / 2.55, 0, 100);
+    public Percent EGR => new(A / 2.55, 0, 100);
 
     #endregion
 

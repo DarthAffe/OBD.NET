@@ -15,8 +15,8 @@ public class DataReceivedEventArgs<T> where T : IOBDData
 
     public DataReceivedEventArgs(T data, DateTime timestamp)
     {
-        Data = data;
-        Timestamp = timestamp;
+        this.Data = data;
+        this.Timestamp = timestamp;
     }
 
     #endregion

@@ -6,7 +6,7 @@ public class HybridBatteryPackRemainingLife : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Percent RemainingLife => new Percent(A / 2.55, 0, 100);
+    public Percent RemainingLife => new(A / 2.55, 0, 100);
 
     #endregion
 

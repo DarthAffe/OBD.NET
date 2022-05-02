@@ -6,7 +6,7 @@ public class RunTimeSinceEngineStart : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Second Runtime => new Second((256 * A) + B, 0, 65535);
+    public Second Runtime => new((256 * A) + B, 0, 65535);
 
     #endregion
 

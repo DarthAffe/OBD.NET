@@ -14,10 +14,10 @@ public class ELM327 : SerialDevice
 {
     #region Properties & Fields
 
-    protected readonly Dictionary<Type, IDataEventManager> DataReceivedEventHandlers = new Dictionary<Type, IDataEventManager>();
+    protected readonly Dictionary<Type, IDataEventManager> DataReceivedEventHandlers = new();
 
-    protected static Dictionary<Type, byte> PidCache { get; } = new Dictionary<Type, byte>();
-    protected static Dictionary<byte, Type> DataTypeCache { get; } = new Dictionary<byte, Type>();
+    protected static Dictionary<Type, byte> PidCache { get; } = new();
+    protected static Dictionary<byte, Type> DataTypeCache { get; } = new();
 
     protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
 

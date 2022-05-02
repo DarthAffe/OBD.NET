@@ -6,7 +6,7 @@ public class EvapSystemVaporPressure2 : AbstractOBDData
 {
     #region Properties & Fields
 
-    public Pascal Pressure => new Pascal(((A * 256) + B) - 32767, -32767, 32768);
+    public Pascal Pressure => new(((A * 256) + B) - 32767, -32767, 32768);
 
     #endregion
 

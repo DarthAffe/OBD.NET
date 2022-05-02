@@ -7,8 +7,8 @@ public class EngineCoolantTemperatureSensor : AbstractOBDData
     #region Properties & Fields
 
     public int SensorsSupported => A;
-    public DegreeCelsius Sensor1 => new DegreeCelsius(B - 40, -40, 215);
-    public DegreeCelsius Sensor2 => new DegreeCelsius(C - 40, -40, 215);
+    public DegreeCelsius Sensor1 => new(B - 40, -40, 215);
+    public DegreeCelsius Sensor2 => new(C - 40, -40, 215);
 
     #endregion
 

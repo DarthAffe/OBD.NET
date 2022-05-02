@@ -19,7 +19,7 @@ public class OBDDebugLogger : IOBDLogger
 
     public OBDDebugLogger(OBDLogLevel level = OBDLogLevel.None)
     {
-        LogLevel = level;
+        this.LogLevel = level;
     }
 
     #endregion
