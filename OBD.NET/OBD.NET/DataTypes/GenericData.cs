@@ -1,4 +1,6 @@
-﻿namespace OBD.NET.DataTypes;
+﻿using System;
+
+namespace OBD.NET.DataTypes;
 
 public abstract class GenericData
 {

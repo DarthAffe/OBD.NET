@@ -1,4 +1,7 @@
-﻿namespace OBD.NET.Util;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace OBD.NET.Util;
 
 /// <summary>
 /// Notifies one or more waiting awaiters that an event has occurred

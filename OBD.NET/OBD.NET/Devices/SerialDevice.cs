@@ -1,5 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using OBD.NET.Communication;
 using OBD.NET.Communication.EventArgs;
 using OBD.NET.Exceptions;

@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using OBD.NET.Commands;
 using OBD.NET.Communication;
 using OBD.NET.Enums;

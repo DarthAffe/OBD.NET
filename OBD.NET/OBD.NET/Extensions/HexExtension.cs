@@ -1,4 +1,7 @@
-﻿namespace OBD.NET.Extensions;
+﻿using System;
+using System.Linq;
+
+namespace OBD.NET.Extensions;
 
 public static class HexExtension
 {

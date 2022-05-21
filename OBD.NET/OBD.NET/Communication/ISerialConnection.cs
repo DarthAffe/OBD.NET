@@ -1,4 +1,6 @@
-﻿using OBD.NET.Communication.EventArgs;
+﻿using System;
+using System.Threading.Tasks;
+using OBD.NET.Communication.EventArgs;
 
 namespace OBD.NET.Communication;
 

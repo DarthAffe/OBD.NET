@@ -1,4 +1,5 @@
-﻿using OBD.NET.OBDData;
+﻿using System;
+using OBD.NET.OBDData;
 
 namespace OBD.NET.Events.EventArgs;
 

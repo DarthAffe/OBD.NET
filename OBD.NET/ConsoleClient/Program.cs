@@ -1,4 +1,7 @@
-﻿using OBD.NET.Communication;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using OBD.NET.Communication;
 using OBD.NET.Devices;
 using OBD.NET.Extensions;
 using OBD.NET.Logging;
@@ -12,19 +15,19 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        if (args.Length < 1)
-        {
-            Console.WriteLine("Parameter ComPort needed.");
+        //if (args.Length < 1)
+        //{
+        //    Console.WriteLine("Parameter ComPort needed.");
 
-            IEnumerable<string> availablePorts = SerialConnection.GetAvailablePorts();
+        //    IEnumerable<string> availablePorts = SerialConnection.GetAvailablePorts();
 
-            Console.WriteLine("\nAvailable ports:");
+        //    Console.WriteLine("\nAvailable ports:");
 
-            foreach (string port in availablePorts)
-                Console.WriteLine(port);
+        //    foreach (string port in availablePorts)
+        //        Console.WriteLine(port);
 
-            return;
-        }
+        //    return;
+        //}
 
         string comPort = args[0];
 

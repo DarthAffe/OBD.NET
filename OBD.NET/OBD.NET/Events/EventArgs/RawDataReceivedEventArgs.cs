@@ -1,4 +1,6 @@
-﻿namespace OBD.NET.Events.EventArgs;
+﻿using System;
+
+namespace OBD.NET.Events.EventArgs;
 
 public class RawDataReceivedEventArgs
 {

@@ -1,4 +1,5 @@
-﻿using OBD.NET.Extensions;
+﻿using System;
+using OBD.NET.Extensions;
 
 namespace OBD.NET.OBDData;
 

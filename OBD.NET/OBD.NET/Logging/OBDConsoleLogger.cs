@@ -1,3 +1,5 @@
+using System;
+
 namespace OBD.NET.Logging;
 
 /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace OBD.NET.OBDData._00_1F;
+﻿using System;
+
+namespace OBD.NET.OBDData._00_1F;
 
 public class OxygenSensorPresent : AbstractOBDData
 {

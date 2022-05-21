@@ -1,4 +1,6 @@
-﻿namespace OBD.NET.Exceptions;
+﻿using System;
+
+namespace OBD.NET.Exceptions;
 
 public class SerialException : Exception
 {
