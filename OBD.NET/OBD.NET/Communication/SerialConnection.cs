@@ -23,7 +23,7 @@ public class SerialConnection : ISerialConnection
 
     #region Events
 
-    public event EventHandler<DataReceivedEventArgs>? DataReceived = delegate {  };
+    public event EventHandler<DataReceivedEventArgs>? DataReceived = delegate { };
 
     #endregion
 
@@ -59,9 +59,31 @@ public class SerialConnection : ISerialConnection
 
     public void Dispose() => _serialPort.Dispose();
 
-    public Task ConnectAsync() => throw new NotSupportedException("Asynchronous operations not supported");
+    public Task ConnectAsync()
+    {
+        try
+        {
+            Connect();
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
 
-    public Task WriteAsync(byte[] data) => throw new NotSupportedException("Asynchronous operations not supported");
+    public Task WriteAsync(byte[] data)
+    {
+        try
+        {
+            Write(data);
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
 
     public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
 
@@ -128,10 +150,32 @@ public class SerialConnection : ISerialConnection
     }
 
     public void Dispose() => _serialPort.Dispose();
+    
+    public Task ConnectAsync()
+    {
+        try
+        {
+            Connect();
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
 
-    public Task ConnectAsync() => throw new NotSupportedException("Asynchronous operations not supported");
-
-    public Task WriteAsync(byte[] data) => throw new NotSupportedException("Asynchronous operations not supported");
+    public Task WriteAsync(byte[] data)
+    {
+        try
+        {
+            Write(data);
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return Task.FromException(ex);
+        }
+    }
 
     public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
 
