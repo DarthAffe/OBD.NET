@@ -16,7 +16,6 @@ public class SerialException : Exception
     public SerialException(string message, Exception innerException)
         : base(message, innerException)
     { }
-
-
+    
     #endregion
 }

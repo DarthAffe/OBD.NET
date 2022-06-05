@@ -59,30 +59,16 @@ public class SerialConnection : ISerialConnection
 
     public void Dispose() => _serialPort.Dispose();
 
-    public Task ConnectAsync()
+    public async Task ConnectAsync()
     {
-        try
-        {
-            Connect();
-            return Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            return Task.FromException(ex);
-        }
+        await Task.Yield();
+        Connect();
     }
 
-    public Task WriteAsync(byte[] data)
+    public async Task WriteAsync(byte[] data)
     {
-        try
-        {
-            Write(data);
-            return Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            return Task.FromException(ex);
-        }
+        await Task.Yield();
+        Write(data);
     }
 
     public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
@@ -151,30 +137,16 @@ public class SerialConnection : ISerialConnection
 
     public void Dispose() => _serialPort.Dispose();
     
-    public Task ConnectAsync()
+    public async Task ConnectAsync()
     {
-        try
-        {
-            Connect();
-            return Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            return Task.FromException(ex);
-        }
+        await Task.Yield();
+        Connect();
     }
 
-    public Task WriteAsync(byte[] data)
+    public async Task WriteAsync(byte[] data)
     {
-        try
-        {
-            Write(data);
-            return Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            return Task.FromException(ex);
-        }
+        await Task.Yield();
+        Write(data);
     }
 
     public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
