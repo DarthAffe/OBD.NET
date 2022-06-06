@@ -2,8 +2,7 @@
 C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter
 
 ## Projects
-* [OBD.NET](https://www.nuget.org/packages/OBD.NET) - OBD-II implementation in .NET 6/5 and .NET Standard 1.4
-* OBD.NET.Universal - Implementation of BluetoothSerialConnection for connecting to Bluetooth Adapter on UWP
+* [OBD.NET](https://www.nuget.org/packages/OBD.NET) - OBD-II implementation in .NET 6/5 and .NET Framework 4.8
 * ConsoleClient - Example client application using SerialConnection, running with .NET 6
 
 ## Usage
@@ -36,7 +35,7 @@ public class Program
         using ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
         dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
-        dev.SubscribeDataReceived<EngineFuelRate>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
+        dev.SubscribeDataReceived<VehicleSpeed>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
 
         dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
@@ -46,7 +45,7 @@ public class Program
         for (int i = 0; i < 5; i++)
         {
             dev.RequestData<EngineRPM>();
-            dev.RequestData<EngineFuelRate>();
+            dev.RequestData<VehicleSpeed>();
             Thread.Sleep(1000);
         }
 
