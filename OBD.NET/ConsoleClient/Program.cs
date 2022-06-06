@@ -33,7 +33,7 @@ public class Program
         using ELM327 dev = new(connection, new OBDConsoleLogger(OBDLogLevel.Debug));
 
         dev.SubscribeDataReceived<EngineRPM>((_, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
-        dev.SubscribeDataReceived<EngineFuelRate>((_, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
+        dev.SubscribeDataReceived<VehicleSpeed>((_, data) => Console.WriteLine("VehicleSpeed: " + data.Data));
 
         dev.SubscribeDataReceived<IOBDData>((_, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
@@ -43,7 +43,7 @@ public class Program
         for (int i = 0; i < 5; i++)
         {
             dev.RequestData<EngineRPM>();
-            dev.RequestData<EngineFuelRate>();
+            dev.RequestData<VehicleSpeed>();
             Thread.Sleep(1000);
         }
 
