@@ -9,7 +9,7 @@
     <Company>-</Company>
     <Product>OBD.NET</Product>
     <Description>C#-Library to read/write data from/to a car through an ELM327-/STN1170-Adapter</Description>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
 
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryType>Github</RepositoryType>
