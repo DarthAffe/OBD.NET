@@ -81,7 +81,6 @@ using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Threading.Tasks;
-using OBD.NET.Communication.EventArgs;
 
 namespace OBD.NET.Communication;
 

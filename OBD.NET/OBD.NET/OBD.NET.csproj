@@ -36,8 +36,8 @@
     <DefineConstants>NET6_0;NETFULL</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.4'">
-    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD1_4</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net4.8'">
+    <DefineConstants>NET4_8;NETFULL</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
