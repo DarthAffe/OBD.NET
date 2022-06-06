@@ -1,6 +1,6 @@
 ﻿using OBD.NET.DataTypes;
 
-namespace OBD.NET.OBDData._60_7F;
+namespace OBD.NET.OBDData;
 
 public class ActualEnginePercentTorque : AbstractOBDData
 {

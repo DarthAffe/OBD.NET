@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.OBDData._60_7F;
+﻿namespace OBD.NET.OBDData;
 
 public class PidsSupported61_80 : AbstractPidsSupported
 {

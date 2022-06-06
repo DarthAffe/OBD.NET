@@ -6,8 +6,6 @@ using OBD.NET.Devices;
 using OBD.NET.Extensions;
 using OBD.NET.Logging;
 using OBD.NET.OBDData;
-using OBD.NET.OBDData._00_1F;
-using OBD.NET.OBDData._40_5F;
 
 namespace ConsoleClient;
 

@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.Communication.EventArgs;
+﻿namespace OBD.NET.Communication;
 
 /// <summary>
 /// Event args for receiving serial data

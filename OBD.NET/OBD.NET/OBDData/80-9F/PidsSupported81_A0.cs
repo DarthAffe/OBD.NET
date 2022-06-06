@@ -1,4 +1,4 @@
-﻿namespace OBD.NET.OBDData._80_9F;
+﻿namespace OBD.NET.OBDData;
 
 public class PidsSupported81_A0 : AbstractPidsSupported
 {

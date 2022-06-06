@@ -1,6 +1,6 @@
 ﻿using OBD.NET.DataTypes;
 
-namespace OBD.NET.OBDData._40_5F;
+namespace OBD.NET.OBDData;
 
 public class ShortTermSecondaryOxygenSensorTrimBank24 : AbstractOBDData
 {

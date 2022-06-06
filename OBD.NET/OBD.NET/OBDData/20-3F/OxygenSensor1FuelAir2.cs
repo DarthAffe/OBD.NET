@@ -1,6 +1,6 @@
 ﻿using OBD.NET.DataTypes;
 
-namespace OBD.NET.OBDData._20_3F;
+namespace OBD.NET.OBDData;
 
 public class OxygenSensor1FuelAir2 : AbstractOBDData
 {

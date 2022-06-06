@@ -7,7 +7,6 @@ using OBD.NET.Commands;
 using OBD.NET.Communication;
 using OBD.NET.Enums;
 using OBD.NET.Events;
-using OBD.NET.Events.EventArgs;
 using OBD.NET.Extensions;
 using OBD.NET.Logging;
 using OBD.NET.OBDData;

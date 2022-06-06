@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OBD.NET.Communication;
-using OBD.NET.Communication.EventArgs;
 using OBD.NET.Exceptions;
 using OBD.NET.Logging;
 

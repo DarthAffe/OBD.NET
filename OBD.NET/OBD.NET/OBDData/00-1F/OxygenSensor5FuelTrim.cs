@@ -1,6 +1,6 @@
 ﻿using OBD.NET.DataTypes;
 
-namespace OBD.NET.OBDData._00_1F;
+namespace OBD.NET.OBDData;
 
 public class OxygenSensor5FuelTrim : AbstractOBDData
 {
